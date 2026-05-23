@@ -1,0 +1,185 @@
+[
+  {
+    "caseId": "case01",
+    "description": "Ray 類型 — 臥室、修復睡眠",
+    "input": {
+      "locale": "zh_tw",
+      "birth": { "year": 1984, "month": 10, "day": 1, "hourBranch": "子" },
+      "favoritePokemon": { "dexNo": 94, "name": "耿鬼" },
+      "quizTags": ["安定", "修復", "低刺激", "睡眠", "陪伴"],
+      "sceneId": "bedroom"
+    },
+    "expectations": {
+      "description": "水、土五行寶可夢應出現在前排；睡眠修復類 keywords/psychStates 命中率高；三個槽位不應全部同五行",
+      "topElementsInTop5": ["水", "土"],
+      "acceptedPrimaryNeeds": ["土", "水", "木"],
+      "favoritePartnerDexNo": 94,
+      "favoritePartnerMustExist": true,
+      "slotDiversityCheck": true,
+      "dynamicSceneMode": false
+    }
+  },
+  {
+    "caseId": "case02",
+    "description": "辦公室、專注效率",
+    "input": {
+      "locale": "zh_tw",
+      "birth": { "year": 1990, "month": 3, "day": 15, "hourBranch": "unknown" },
+      "favoritePokemon": null,
+      "quizTags": ["專注", "效率", "秩序", "清晰"],
+      "sceneId": "office"
+    },
+    "expectations": {
+      "description": "3月生(木+2)、15日尾數5(土+1)→木最強，水/火/金最弱，primaryNeed=水(優先序)。水五行寶可夢因 +10 主需求，預期出現在前排；金因場景+6 也應出現",
+      "topElementsInTop5": ["水", "金"],
+      "favoritePartnerMustExist": false,
+      "slotDiversityCheck": true,
+      "dynamicSceneMode": false
+    }
+  },
+  {
+    "caseId": "case03",
+    "description": "書桌、學習成長",
+    "input": {
+      "locale": "zh_tw",
+      "birth": { "year": 1995, "month": 4, "day": 22, "hourBranch": "卯" },
+      "favoritePokemon": null,
+      "quizTags": ["成長", "學習", "專注", "分析"],
+      "sceneId": "desk"
+    },
+    "expectations": {
+      "description": "木、金五行寶可夢應在前排；學習成長標籤命中率高",
+      "topElementsInTop5": ["木", "金"],
+      "favoritePartnerMustExist": false,
+      "slotDiversityCheck": true,
+      "dynamicSceneMode": false
+    }
+  },
+  {
+    "caseId": "case04",
+    "description": "玄關、守護迎接",
+    "input": {
+      "locale": "zh_tw",
+      "birth": { "year": 1988, "month": 7, "day": 8, "hourBranch": "辰" },
+      "favoritePokemon": null,
+      "quizTags": ["守護", "安定", "迎接", "流動"],
+      "sceneId": "entrance"
+    },
+    "expectations": {
+      "description": "7月生(火+2)、8日尾數8(金+1)、辰時(土+1)→火最強，木/水最弱，primaryNeed=木(優先序第1)。木因 +10 主需求主導前排；土因場景+6 也應出現",
+      "topElementsInTop5": ["木", "土"],
+      "favoritePartnerMustExist": false,
+      "slotDiversityCheck": true,
+      "dynamicSceneMode": false
+    }
+  },
+  {
+    "caseId": "case05",
+    "description": "watch 場景、quizTags 偏水 → 動態五行應為水",
+    "input": {
+      "locale": "zh_tw",
+      "birth": { "year": 2000, "month": 6, "day": 20, "hourBranch": "unknown" },
+      "favoritePokemon": null,
+      "quizTags": ["修復", "睡眠", "柔和"],
+      "sceneId": "watch"
+    },
+    "expectations": {
+      "description": "watch 動態五行應推導為水",
+      "dynamicSceneMode": true,
+      "expectedDynamicElements": ["水"],
+      "favoritePartnerMustExist": false
+    }
+  },
+  {
+    "caseId": "case06",
+    "description": "watch 場景、quizTags 偏金 → 動態五行應為金",
+    "input": {
+      "locale": "zh_tw",
+      "birth": { "year": 1992, "month": 9, "day": 17, "hourBranch": "酉" },
+      "favoritePokemon": null,
+      "quizTags": ["專注", "效率", "清晰"],
+      "sceneId": "watch"
+    },
+    "expectations": {
+      "description": "watch 動態五行應推導為金",
+      "dynamicSceneMode": true,
+      "expectedDynamicElements": ["金"],
+      "favoritePartnerMustExist": false
+    }
+  },
+  {
+    "caseId": "case07",
+    "description": "隨身包包、陪伴人際",
+    "input": {
+      "locale": "zh_tw",
+      "birth": { "year": 1998, "month": 2, "day": 14, "hourBranch": "寅" },
+      "favoritePokemon": null,
+      "quizTags": ["陪伴", "守護", "人際", "好感", "輕盈"],
+      "sceneId": "bag"
+    },
+    "expectations": {
+      "description": "陪伴、人際類 psychStates/keywords 命中高的寶可夢應在前排；土、水、木五行為主",
+      "topElementsInTop5": ["土", "水", "木"],
+      "favoritePartnerMustExist": false,
+      "slotDiversityCheck": true,
+      "dynamicSceneMode": false
+    }
+  },
+  {
+    "caseId": "case08",
+    "description": "火偏強使用者 + bedroom — 陽火寶可夢應不大量出現在前排",
+    "input": {
+      "locale": "zh_tw",
+      "birth": { "year": 1993, "month": 6, "day": 3, "hourBranch": "午" },
+      "favoritePokemon": null,
+      "quizTags": ["修復", "安定", "睡眠"],
+      "sceneId": "bedroom"
+    },
+    "expectations": {
+      "description": "火偏強（月份6月+午時），陽火寶可夢在 bedroom 會被 -5（過旺）且 -3（臥室額外），不應大量出現在 top5",
+      "penaltyCheck": "overFirePenalty",
+      "birthElementStrongest": ["火"],
+      "slotDiversityCheck": true,
+      "favoritePartnerMustExist": false,
+      "dynamicSceneMode": false
+    }
+  },
+  {
+    "caseId": "case09",
+    "description": "水偏強使用者 + office — 陰水寶可夢在非臥室場景輕微扣分",
+    "input": {
+      "locale": "zh_tw",
+      "birth": { "year": 1985, "month": 12, "day": 9, "hourBranch": "亥" },
+      "favoritePokemon": null,
+      "quizTags": ["專注", "效率", "秩序"],
+      "sceneId": "office"
+    },
+    "expectations": {
+      "description": "水偏強（月份12月+亥時），陰水寶可夢在 office 場景應被 -3",
+      "penaltyCheck": "overWaterPenalty",
+      "birthElementStrongest": ["水"],
+      "slotDiversityCheck": true,
+      "favoritePartnerMustExist": false,
+      "dynamicSceneMode": false
+    }
+  },
+  {
+    "caseId": "case10",
+    "description": "本命夥伴耿鬼不被否定",
+    "input": {
+      "locale": "zh_tw",
+      "birth": { "year": 1990, "month": 8, "day": 7, "hourBranch": "unknown" },
+      "favoritePokemon": { "dexNo": 94, "name": "耿鬼" },
+      "quizTags": ["安心", "陪伴", "修復"],
+      "sceneId": "bedroom"
+    },
+    "expectations": {
+      "description": "耿鬼即使不是 mainGuardian 也必須出現在 favoritePartner 槽位，overridable: false",
+      "favoritePartnerDexNo": 94,
+      "favoritePartnerMustExist": true,
+      "favoritePartnerNotOverridden": true,
+      "slotDiversityCheck": true,
+      "dynamicSceneMode": false
+    }
+  }
+]

@@ -1,0 +1,1006 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "createdAt": "2026-05-23",
+    "description": "Pokémon Guardian Game — 測驗與推薦規則資料檔",
+    "note": "本檔案為非官方粉絲向企劃的規則設定，不含官方圖片，不修改 data/pokemon.json"
+  },
+
+  "locale": {
+    "zh_tw": {
+      "language": "繁體中文",
+      "tone": ["補運", "五行", "守護位", "氣場", "陪伴"],
+      "uiLabels": {
+        "quizTitle": "找到你的寶可夢守護夥伴",
+        "resultTitle": "你的守護寶可夢",
+        "retakeBtn": "重新測驗",
+        "shareBtn": "分享結果",
+        "officialLinkBtn": "前往官方 30 週年頁面查看圖案"
+      }
+    },
+    "en": {
+      "language": "English",
+      "tone": ["energy", "aura", "comfort", "healing", "match", "current state"],
+      "uiLabels": {
+        "quizTitle": "Find Your Pokémon Energy Match",
+        "resultTitle": "Your Pokémon Guardian",
+        "retakeBtn": "Retake Quiz",
+        "shareBtn": "Share Result",
+        "officialLinkBtn": "View the official 30th anniversary artwork"
+      }
+    },
+    "ja": {
+      "language": "日本語",
+      "tone": ["癒し", "お守り", "気配", "整える", "寄り添う"],
+      "uiLabels": {
+        "quizTitle": "あなたに寄り添うポケモンを見つけよう",
+        "resultTitle": "あなたの守護ポケモン",
+        "retakeBtn": "もう一度診断する",
+        "shareBtn": "結果をシェアする",
+        "officialLinkBtn": "公式30周年ページでアイコンを見る"
+      }
+    }
+  },
+
+  "fiveElements": {
+    "木": {
+      "element": "木",
+      "zh_tw": {
+        "meaning": ["成長", "舒展", "學習", "新開始"],
+        "description": "木代表向上的生命力，適合正在開展新計畫、學習新事物或需要突破卡關狀態的時期。"
+      },
+      "en": {
+        "meaning": ["growth", "renewal", "learning", "expansion"],
+        "description": "Wood energy represents upward vitality — ideal when starting something new, building momentum, or breaking through stagnation."
+      },
+      "ja": {
+        "meaning": ["成長", "芽吹き", "学び", "広がり"],
+        "description": "木のエネルギーは上へ伸びる生命力。新しいことを始めたい、学びを深めたい、停滞を抜け出したいときにぴったりです。"
+      }
+    },
+    "火": {
+      "element": "火",
+      "zh_tw": {
+        "meaning": ["行動", "熱情", "曝光", "啟動"],
+        "description": "火代表驅動與熱力，適合需要提振幹勁、加強人際存在感或推動事情快速啟動的時期。"
+      },
+      "en": {
+        "meaning": ["action", "passion", "visibility", "ignition"],
+        "description": "Fire energy brings drive and warmth — great for pushing things forward, showing up more boldly, or reigniting motivation."
+      },
+      "ja": {
+        "meaning": ["行動力", "情熱", "明るさ", "始動"],
+        "description": "火のエネルギーは情熱と推進力。やる気を高めたい、存在感を出したい、物事を動かしたいときに力を発揮します。"
+      }
+    },
+    "土": {
+      "element": "土",
+      "zh_tw": {
+        "meaning": ["穩定", "承載", "休息", "生活感"],
+        "description": "土代表厚實的承載能力，適合需要找回踏實感、建立規律日常或讓自己好好喘口氣的時期。"
+      },
+      "en": {
+        "meaning": ["stability", "grounding", "rest", "daily rhythm"],
+        "description": "Earth energy provides a steady foundation — helpful when you need to recharge, establish routines, or simply feel more settled in your day."
+      },
+      "ja": {
+        "meaning": ["安定", "土台", "休息", "暮らし"],
+        "description": "土のエネルギーはしっかりした土台。日常を整えたい、疲れを取りたい、地に足をつけたいときに支えてくれます。"
+      }
+    },
+    "金": {
+      "element": "金",
+      "zh_tw": {
+        "meaning": ["專注", "決策", "效率", "秩序"],
+        "description": "金代表清晰的判斷力，適合需要整理思緒、做出決定或提升工作效率的時期。"
+      },
+      "en": {
+        "meaning": ["focus", "decision", "efficiency", "structure"],
+        "description": "Metal energy sharpens clarity — ideal for cutting through noise, making decisions with confidence, and creating order in your environment."
+      },
+      "ja": {
+        "meaning": ["集中", "判断", "効率", "秩序"],
+        "description": "金のエネルギーは鋭い判断力と集中力。頭を整理したい、決断したい、効率よく進めたいときに役立ちます。"
+      }
+    },
+    "水": {
+      "element": "水",
+      "zh_tw": {
+        "meaning": ["修復", "情緒", "直覺", "流動"],
+        "description": "水代表深層的滋養與流動，適合情緒需要照料、壓力偏大或想找回直覺感知的時期。"
+      },
+      "en": {
+        "meaning": ["healing", "emotion", "intuition", "flow"],
+        "description": "Water energy restores and softens — supportive when you're processing feelings, recovering from stress, or want to reconnect with your inner sense of things."
+      },
+      "ja": {
+        "meaning": ["癒し", "感情", "直感", "流れ"],
+        "description": "水のエネルギーは深い回復力と流動性。感情を整えたい、疲れを癒したい、直感を取り戻したいときにそっと寄り添います。"
+      }
+    }
+  },
+
+  "birthElementRules": {
+    "_note": "出生資料簡化五行推算，非命理學精確計算，僅作輕量補位參考",
+    "monthRules": {
+      "scores": {
+        "木": [2, 3, 4],
+        "火": [5, 6, 7],
+        "金": [8, 9, 10],
+        "水": [11, 12, 1]
+      },
+      "weight": 2,
+      "description": {
+        "zh_tw": "出生月份對應四季五行，土貫穿四季故不列入月份主偏",
+        "en": "Birth month maps to seasonal five elements; Earth spans all seasons and is excluded from monthly bias",
+        "ja": "生まれた月は季節の五行に対応します。土は四季を貫くため月の主偏には含まれません"
+      }
+    },
+    "dayDigitRules": {
+      "scores": {
+        "木": [1, 2],
+        "火": [3, 4],
+        "土": [5, 6],
+        "金": [7, 8],
+        "水": [9, 0]
+      },
+      "weight": 1,
+      "description": {
+        "zh_tw": "生日個位數字對應元素補充",
+        "en": "The last digit of birth day maps to a supplementary element",
+        "ja": "生まれた日の一の位が補足する五行に対応します"
+      }
+    },
+    "hourRules": {
+      "scores": {
+        "水": ["子", "亥"],
+        "木": ["寅", "卯"],
+        "火": ["巳", "午"],
+        "金": ["申", "酉"],
+        "土": ["辰", "戌", "丑", "未"]
+      },
+      "chinesHourMap": {
+        "子": "23:00–00:59",
+        "丑": "01:00–02:59",
+        "寅": "03:00–04:59",
+        "卯": "05:00–06:59",
+        "辰": "07:00–08:59",
+        "巳": "09:00–10:59",
+        "午": "11:00–12:59",
+        "未": "13:00–14:59",
+        "申": "15:00–16:59",
+        "酉": "17:00–18:59",
+        "戌": "19:00–20:59",
+        "亥": "21:00–22:59"
+      },
+      "weight": 1,
+      "description": {
+        "zh_tw": "出生時段對應地支五行，以 24 小時制對照",
+        "en": "Birth hour maps to earthly branch elements using 24-hour time ranges",
+        "ja": "生まれた時刻を十二支の五行に対応させます（24時間制）"
+      },
+      "birthTime": {
+        "optional": true,
+        "unknownValue": "unknown",
+        "unknownScore": 0,
+        "unknownLabel": {
+          "zh_tw": "不知道／略過",
+          "en": "I don't know / Skip",
+          "ja": "わからない／スキップ"
+        }
+      }
+    }
+  },
+
+  "quizQuestions": [
+    {
+      "id": "q1",
+      "order": 1,
+      "zh_tw": {
+        "question": "最近比較接近哪種狀態？",
+        "options": [
+          {
+            "id": "q1a",
+            "label": "A",
+            "text": "思緒很多，需要安靜整理",
+            "tags": ["安定", "修復", "低刺激"]
+          },
+          {
+            "id": "q1b",
+            "label": "B",
+            "text": "有點提不起勁，需要重新啟動",
+            "tags": ["行動", "成長", "啟動"]
+          },
+          {
+            "id": "q1c",
+            "label": "C",
+            "text": "情緒比較滿，需要柔和陪伴",
+            "tags": ["陪伴", "修復", "柔和"]
+          },
+          {
+            "id": "q1d",
+            "label": "D",
+            "text": "人際消耗較多，需要保留空間",
+            "tags": ["守護", "安定", "距離感"]
+          },
+          {
+            "id": "q1e",
+            "label": "E",
+            "text": "想往前推進，但需要更清楚的方向",
+            "tags": ["專注", "效率", "秩序"]
+          }
+        ]
+      },
+      "en": {
+        "question": "Which of these feels closest to where you are right now?",
+        "options": [
+          {
+            "id": "q1a",
+            "label": "A",
+            "text": "My mind is running a lot — I need some quiet to sort things out",
+            "tags": ["安定", "修復", "低刺激"]
+          },
+          {
+            "id": "q1b",
+            "label": "B",
+            "text": "I've lost momentum and need something to restart the engine",
+            "tags": ["行動", "成長", "啟動"]
+          },
+          {
+            "id": "q1c",
+            "label": "C",
+            "text": "Feeling emotionally full — I just want gentle company",
+            "tags": ["陪伴", "修復", "柔和"]
+          },
+          {
+            "id": "q1d",
+            "label": "D",
+            "text": "People have been draining me — I need to protect my energy",
+            "tags": ["守護", "安定", "距離感"]
+          },
+          {
+            "id": "q1e",
+            "label": "E",
+            "text": "I want to move forward, but I need a clearer sense of direction",
+            "tags": ["專注", "效率", "秩序"]
+          }
+        ]
+      },
+      "ja": {
+        "question": "最近、自分に一番近いのはどの状態ですか？",
+        "options": [
+          {
+            "id": "q1a",
+            "label": "A",
+            "text": "頭の中がにぎやかで、静かに整理したい",
+            "tags": ["安定", "修復", "低刺激"]
+          },
+          {
+            "id": "q1b",
+            "label": "B",
+            "text": "なんとなくやる気が出なくて、もう一度スイッチを入れたい",
+            "tags": ["行動", "成長", "啟動"]
+          },
+          {
+            "id": "q1c",
+            "label": "C",
+            "text": "感情がいっぱいで、そっと寄り添ってほしい",
+            "tags": ["陪伴", "修復", "柔和"]
+          },
+          {
+            "id": "q1d",
+            "label": "D",
+            "text": "人と関わることで消耗していて、自分の空間を守りたい",
+            "tags": ["守護", "安定", "距離感"]
+          },
+          {
+            "id": "q1e",
+            "label": "E",
+            "text": "前に進みたいけど、もっとはっきりした方向が欲しい",
+            "tags": ["專注", "效率", "秩序"]
+          }
+        ]
+      }
+    },
+    {
+      "id": "q2",
+      "order": 2,
+      "zh_tw": {
+        "question": "你現在最想讓哪一部分變得更順？",
+        "options": [
+          {
+            "id": "q2a",
+            "label": "A",
+            "text": "睡眠與放鬆",
+            "tags": ["睡眠", "修復", "低刺激", "陰水"]
+          },
+          {
+            "id": "q2b",
+            "label": "B",
+            "text": "工作專注",
+            "tags": ["專注", "效率", "秩序", "陽金"]
+          },
+          {
+            "id": "q2c",
+            "label": "C",
+            "text": "人際與好感",
+            "tags": ["人際", "好感", "陪伴", "中性土"]
+          },
+          {
+            "id": "q2d",
+            "label": "D",
+            "text": "財運與穩定",
+            "tags": ["穩定", "財運", "安定", "陽土"]
+          },
+          {
+            "id": "q2e",
+            "label": "E",
+            "text": "學習與成長",
+            "tags": ["成長", "學習", "行動", "陽木"]
+          }
+        ]
+      },
+      "en": {
+        "question": "What would you like to feel more at ease with right now?",
+        "options": [
+          {
+            "id": "q2a",
+            "label": "A",
+            "text": "Sleep and relaxation",
+            "tags": ["睡眠", "修復", "低刺激", "陰水"]
+          },
+          {
+            "id": "q2b",
+            "label": "B",
+            "text": "Focus at work",
+            "tags": ["專注", "效率", "秩序", "陽金"]
+          },
+          {
+            "id": "q2c",
+            "label": "C",
+            "text": "Social connections and likability",
+            "tags": ["人際", "好感", "陪伴", "中性土"]
+          },
+          {
+            "id": "q2d",
+            "label": "D",
+            "text": "Financial flow and stability",
+            "tags": ["穩定", "財運", "安定", "陽土"]
+          },
+          {
+            "id": "q2e",
+            "label": "E",
+            "text": "Learning and personal growth",
+            "tags": ["成長", "學習", "行動", "陽木"]
+          }
+        ]
+      },
+      "ja": {
+        "question": "今、もう少し整えたいことはどれですか？",
+        "options": [
+          {
+            "id": "q2a",
+            "label": "A",
+            "text": "睡眠と心のゆとり",
+            "tags": ["睡眠", "修復", "低刺激", "陰水"]
+          },
+          {
+            "id": "q2b",
+            "label": "B",
+            "text": "仕事への集中力",
+            "tags": ["專注", "效率", "秩序", "陽金"]
+          },
+          {
+            "id": "q2c",
+            "label": "C",
+            "text": "人間関係と好印象",
+            "tags": ["人際", "好感", "陪伴", "中性土"]
+          },
+          {
+            "id": "q2d",
+            "label": "D",
+            "text": "金運と生活の安定",
+            "tags": ["穩定", "財運", "安定", "陽土"]
+          },
+          {
+            "id": "q2e",
+            "label": "E",
+            "text": "学びと自己成長",
+            "tags": ["成長", "學習", "行動", "陽木"]
+          }
+        ]
+      }
+    },
+    {
+      "id": "q3",
+      "order": 3,
+      "zh_tw": {
+        "question": "你想把寶可夢放在哪裡？",
+        "options": [
+          {
+            "id": "q3a",
+            "label": "A",
+            "text": "玄關",
+            "sceneId": "entrance",
+            "tags": ["守護", "迎接", "轉場"]
+          },
+          {
+            "id": "q3b",
+            "label": "B",
+            "text": "臥室",
+            "sceneId": "bedroom",
+            "tags": ["休息", "修復", "安定"]
+          },
+          {
+            "id": "q3c",
+            "label": "C",
+            "text": "書桌",
+            "sceneId": "desk",
+            "tags": ["專注", "學習", "整理"]
+          },
+          {
+            "id": "q3d",
+            "label": "D",
+            "text": "辦公室",
+            "sceneId": "office",
+            "tags": ["穩定推進", "協調", "決策"]
+          },
+          {
+            "id": "q3e",
+            "label": "E",
+            "text": "手錶桌面",
+            "sceneId": "watch",
+            "tags": ["每日提醒", "狀態切換"]
+          },
+          {
+            "id": "q3f",
+            "label": "F",
+            "text": "隨身包包",
+            "sceneId": "bag",
+            "tags": ["陪伴", "守護", "日常感"]
+          }
+        ]
+      },
+      "en": {
+        "question": "Where would you keep your Pokémon companion?",
+        "options": [
+          {
+            "id": "q3a",
+            "label": "A",
+            "text": "By the front door",
+            "sceneId": "entrance",
+            "tags": ["守護", "迎接", "轉場"]
+          },
+          {
+            "id": "q3b",
+            "label": "B",
+            "text": "In my bedroom",
+            "sceneId": "bedroom",
+            "tags": ["休息", "修復", "安定"]
+          },
+          {
+            "id": "q3c",
+            "label": "C",
+            "text": "On my desk at home",
+            "sceneId": "desk",
+            "tags": ["專注", "學習", "整理"]
+          },
+          {
+            "id": "q3d",
+            "label": "D",
+            "text": "At the office",
+            "sceneId": "office",
+            "tags": ["穩定推進", "協調", "決策"]
+          },
+          {
+            "id": "q3e",
+            "label": "E",
+            "text": "As my watch face",
+            "sceneId": "watch",
+            "tags": ["每日提醒", "狀態切換"]
+          },
+          {
+            "id": "q3f",
+            "label": "F",
+            "text": "In my everyday bag",
+            "sceneId": "bag",
+            "tags": ["陪伴", "守護", "日常感"]
+          }
+        ]
+      },
+      "ja": {
+        "question": "ポケモンをどこに置きたいですか？",
+        "options": [
+          {
+            "id": "q3a",
+            "label": "A",
+            "text": "玄関",
+            "sceneId": "entrance",
+            "tags": ["守護", "迎接", "轉場"]
+          },
+          {
+            "id": "q3b",
+            "label": "B",
+            "text": "寝室",
+            "sceneId": "bedroom",
+            "tags": ["休息", "修復", "安定"]
+          },
+          {
+            "id": "q3c",
+            "label": "C",
+            "text": "自宅の書斎・机",
+            "sceneId": "desk",
+            "tags": ["專注", "學習", "整理"]
+          },
+          {
+            "id": "q3d",
+            "label": "D",
+            "text": "職場のデスク",
+            "sceneId": "office",
+            "tags": ["穩定推進", "協調", "決策"]
+          },
+          {
+            "id": "q3e",
+            "label": "E",
+            "text": "時計の文字盤に",
+            "sceneId": "watch",
+            "tags": ["每日提醒", "狀態切換"]
+          },
+          {
+            "id": "q3f",
+            "label": "F",
+            "text": "いつものバッグの中",
+            "sceneId": "bag",
+            "tags": ["陪伴", "守護", "日常感"]
+          }
+        ]
+      }
+    },
+    {
+      "id": "q4",
+      "order": 4,
+      "zh_tw": {
+        "question": "你希望這隻寶可夢帶給你什麼感覺？",
+        "options": [
+          {
+            "id": "q4a",
+            "label": "A",
+            "text": "安心",
+            "tags": ["安心", "修復", "低刺激", "陰水", "中性土"]
+          },
+          {
+            "id": "q4b",
+            "label": "B",
+            "text": "專注",
+            "tags": ["專注", "效率", "清晰", "陽金"]
+          },
+          {
+            "id": "q4c",
+            "label": "C",
+            "text": "被陪伴",
+            "tags": ["陪伴", "人際", "好感", "中性土"]
+          },
+          {
+            "id": "q4d",
+            "label": "D",
+            "text": "有行動力",
+            "tags": ["行動", "推進", "啟動", "陽火", "陽木"]
+          },
+          {
+            "id": "q4e",
+            "label": "E",
+            "text": "有流動感",
+            "tags": ["流動感", "修復", "直覺", "陰水"]
+          }
+        ]
+      },
+      "en": {
+        "question": "What feeling do you hope your Pokémon brings you?",
+        "options": [
+          {
+            "id": "q4a",
+            "label": "A",
+            "text": "A sense of safety and calm",
+            "tags": ["安心", "修復", "低刺激", "陰水", "中性土"]
+          },
+          {
+            "id": "q4b",
+            "label": "B",
+            "text": "Sharpness and focus",
+            "tags": ["專注", "效率", "清晰", "陽金"]
+          },
+          {
+            "id": "q4c",
+            "label": "C",
+            "text": "Companionship — like someone's with me",
+            "tags": ["陪伴", "人際", "好感", "中性土"]
+          },
+          {
+            "id": "q4d",
+            "label": "D",
+            "text": "A boost of energy and drive",
+            "tags": ["行動", "推進", "啟動", "陽火", "陽木"]
+          },
+          {
+            "id": "q4e",
+            "label": "E",
+            "text": "A gentle, flowing ease",
+            "tags": ["流動感", "修復", "直覺", "陰水"]
+          }
+        ]
+      },
+      "ja": {
+        "question": "そのポケモンにどんな気持ちをもたらしてほしいですか？",
+        "options": [
+          {
+            "id": "q4a",
+            "label": "A",
+            "text": "ほっとする安心感",
+            "tags": ["安心", "修復", "低刺激", "陰水", "中性土"]
+          },
+          {
+            "id": "q4b",
+            "label": "B",
+            "text": "頭がクリアになる集中力",
+            "tags": ["專注", "效率", "清晰", "陽金"]
+          },
+          {
+            "id": "q4c",
+            "label": "C",
+            "text": "誰かがそばにいるような温かさ",
+            "tags": ["陪伴", "人際", "好感", "中性土"]
+          },
+          {
+            "id": "q4d",
+            "label": "D",
+            "text": "行動したくなるエネルギー",
+            "tags": ["行動", "推進", "啟動", "陽火", "陽木"]
+          },
+          {
+            "id": "q4e",
+            "label": "E",
+            "text": "さらっとした流れるような軽さ",
+            "tags": ["流動感", "修復", "直覺", "陰水"]
+          }
+        ]
+      }
+    },
+    {
+      "id": "q5",
+      "order": 5,
+      "zh_tw": {
+        "question": "你現在最需要哪種提醒？",
+        "options": [
+          {
+            "id": "q5a",
+            "label": "A",
+            "text": "慢慢整理也可以",
+            "tags": ["修復", "安定", "低刺激", "陰水", "中性土"]
+          },
+          {
+            "id": "q5b",
+            "label": "B",
+            "text": "先把自己穩住",
+            "tags": ["穩定", "守護", "安定", "陽土"]
+          },
+          {
+            "id": "q5c",
+            "label": "C",
+            "text": "今天要往前一步",
+            "tags": ["行動", "推進", "成長", "陽木", "陽火"]
+          },
+          {
+            "id": "q5d",
+            "label": "D",
+            "text": "保留自己的空間",
+            "tags": ["守護", "距離感", "安定", "陰水"]
+          },
+          {
+            "id": "q5e",
+            "label": "E",
+            "text": "讓生活多一點溫度",
+            "tags": ["陪伴", "人際", "好感", "中性土"]
+          }
+        ]
+      },
+      "en": {
+        "question": "What kind of reminder do you need most right now?",
+        "options": [
+          {
+            "id": "q5a",
+            "label": "A",
+            "text": "It's okay to take things slowly",
+            "tags": ["修復", "安定", "低刺激", "陰水", "中性土"]
+          },
+          {
+            "id": "q5b",
+            "label": "B",
+            "text": "Ground yourself first, then move",
+            "tags": ["穩定", "守護", "安定", "陽土"]
+          },
+          {
+            "id": "q5c",
+            "label": "C",
+            "text": "Take one step forward today",
+            "tags": ["行動", "推進", "成長", "陽木", "陽火"]
+          },
+          {
+            "id": "q5d",
+            "label": "D",
+            "text": "You're allowed to protect your space",
+            "tags": ["守護", "距離感", "安定", "陰水"]
+          },
+          {
+            "id": "q5e",
+            "label": "E",
+            "text": "Bring a little more warmth into the everyday",
+            "tags": ["陪伴", "人際", "好感", "中性土"]
+          }
+        ]
+      },
+      "ja": {
+        "question": "今、自分に一番必要な気づきはどれですか？",
+        "options": [
+          {
+            "id": "q5a",
+            "label": "A",
+            "text": "ゆっくり整えていけばいい",
+            "tags": ["修復", "安定", "低刺激", "陰水", "中性土"]
+          },
+          {
+            "id": "q5b",
+            "label": "B",
+            "text": "まず自分を落ち着かせることから",
+            "tags": ["穩定", "守護", "安定", "陽土"]
+          },
+          {
+            "id": "q5c",
+            "label": "C",
+            "text": "今日は一歩だけ前に進んでみよう",
+            "tags": ["行動", "推進", "成長", "陽木", "陽火"]
+          },
+          {
+            "id": "q5d",
+            "label": "D",
+            "text": "自分だけの空間を守っていい",
+            "tags": ["守護", "距離感", "安定", "陰水"]
+          },
+          {
+            "id": "q5e",
+            "label": "E",
+            "text": "日常にもう少し温かさを取り入れよう",
+            "tags": ["陪伴", "人際", "好感", "中性土"]
+          }
+        ]
+      }
+    }
+  ],
+
+  "sceneRules": {
+    "entrance": {
+      "sceneId": "entrance",
+      "zh_tw": { "name": "玄關", "tone": "守護、迎接、轉場" },
+      "en":    { "name": "Front Door / Entryway", "tone": "protection, welcoming, transition" },
+      "ja":    { "name": "玄関", "tone": "守護、お出迎え、切り替え" },
+      "suitableElements":  ["土", "木", "水"],
+      "suitableYinYang":   ["陽", "中性"],
+      "boostTags":  ["守護", "安定", "迎接", "旅行", "流動", "穩定"],
+      "avoidTags":  ["過度刺激", "攻擊性", "沉重"],
+      "resultTone": ["守護", "迎接", "轉場"]
+    },
+    "bedroom": {
+      "sceneId": "bedroom",
+      "zh_tw": { "name": "臥室", "tone": "休息、修復、安定" },
+      "en":    { "name": "Bedroom", "tone": "rest, recovery, calm" },
+      "ja":    { "name": "寝室", "tone": "休息、回復、安定" },
+      "suitableElements":  ["水", "土"],
+      "suitableYinYang":   ["陰", "中性"],
+      "boostTags":  ["睡眠", "修復", "安心", "陪伴", "低刺激", "柔和"],
+      "avoidTags":  ["高刺激", "強戰鬥", "過度火感"],
+      "resultTone": ["休息", "修復", "安定"]
+    },
+    "desk": {
+      "sceneId": "desk",
+      "zh_tw": { "name": "書桌", "tone": "專注、學習、整理" },
+      "en":    { "name": "Home Desk", "tone": "focus, learning, clarity" },
+      "ja":    { "name": "書斎・机", "tone": "集中、学び、整理" },
+      "suitableElements":  ["木", "金", "土"],
+      "suitableYinYang":   ["陽", "中性"],
+      "boostTags":  ["專注", "學習", "成長", "分析", "效率", "清晰"],
+      "avoidTags":  ["過度放空", "沉重"],
+      "resultTone": ["專注", "學習", "整理"]
+    },
+    "office": {
+      "sceneId": "office",
+      "zh_tw": { "name": "辦公室", "tone": "穩定推進、協調、決策" },
+      "en":    { "name": "Office", "tone": "steady progress, coordination, decision-making" },
+      "ja":    { "name": "職場", "tone": "安定した前進、連携、判断" },
+      "suitableElements":  ["金", "土", "木"],
+      "suitableYinYang":   ["陽", "中性"],
+      "boostTags":  ["專注", "推進", "協調", "效率", "守護", "秩序"],
+      "avoidTags":  ["過度情緒化", "過度刺激"],
+      "resultTone": ["穩定推進", "協調", "決策"]
+    },
+    "watch": {
+      "sceneId": "watch",
+      "zh_tw": { "name": "手錶桌面", "tone": "每日提醒、狀態切換" },
+      "en":    { "name": "Watch Face", "tone": "daily reminder, state shift" },
+      "ja":    { "name": "時計の文字盤", "tone": "毎日のリマインダー、気持ちの切り替え" },
+      "suitableElements": [],
+      "dynamicElementMode": true,
+      "dynamicElementSource": "quizTags",
+      "suitableYinYang": ["中性", "陽"],
+      "boostTags": ["提醒", "陪伴", "輕量", "狀態切換", "清晰"],
+      "avoidTags": ["沉重", "壓迫感"],
+      "resultTone": {
+        "zh_tw": ["每日提醒", "狀態切換"],
+        "en":    ["daily reminder", "state shifting"],
+        "ja":    ["毎日のリマインド", "気分の切り替え"]
+      },
+      "_note": "手錶桌面不固定五行。推薦邏輯應依使用者心理測驗標籤推導當下需要的五行。"
+    },
+    "bag": {
+      "sceneId": "bag",
+      "zh_tw": { "name": "隨身包包", "tone": "陪伴、守護、日常感" },
+      "en":    { "name": "Everyday Bag", "tone": "companionship, protection, everyday warmth" },
+      "ja":    { "name": "バッグの中", "tone": "寄り添い、守護、日常のぬくもり" },
+      "suitableElements":  ["木", "水", "土"],
+      "suitableYinYang":   ["陰", "中性"],
+      "boostTags":  ["陪伴", "守護", "人際", "好感", "輕盈", "柔和"],
+      "avoidTags":  ["攻擊性", "沉重", "過度刺激"],
+      "resultTone": ["陪伴", "守護", "日常感"]
+    }
+  },
+
+  "scoringWeights": {
+    "_note": "各項分數加總後正規化，不代表百分比，僅為相對排序依據",
+    "topLevelWeights": {
+      "basePopularityWeight": 0.15,
+      "birthElementWeight":   0.35,
+      "quizStateWeight":      0.25,
+      "sceneFitWeight":       0.25
+    },
+    "detailScores": {
+      "birthElementMatch":     { "score": 10, "condition": "寶可夢五行符合使用者需要補足的五行" },
+      "sceneFiveElementMatch": { "score": 6,  "condition": "寶可夢五行符合場景五行" },
+      "sceneYinYangMatch":     { "score": 4,  "condition": "寶可夢陰陽符合場景陰陽" },
+      "keywordTagHit":         { "score": 3,  "condition": "寶可夢 keywords 每命中一個心理狀態標籤 +3" },
+      "psychStateTagHit":      { "score": 3,  "condition": "寶可夢 psychStates 每命中一個心理狀態標籤 +3" },
+      "sceneKeywordHit":       { "score": 3,  "condition": "寶可夢 keywords 每命中一個場景 boostTags +3" },
+      "popularityBonus":       { "score": "1–5", "condition": "popularityScore 直接轉換，1分→+1, 5分→+5" }
+    },
+    "penalties": {
+      "sceneAvoidTagHit":      { "score": -5, "condition": "寶可夢 keywords/psychStates 每命中一個場景 avoidTags -5" },
+      "overFireOverlap":       { "score": -5, "condition": "使用者火偏強（月份+時辰均為火）且寶可夢五行為陽火" },
+      "overWaterBedroom":      { "score": -3, "condition": "使用者水偏強且寶可夢為陰水，且場景不是臥室" }
+    }
+  },
+
+  "resultSlots": {
+    "favoritePartner": {
+      "slotId": "favoritePartner",
+      "zh_tw": {
+        "name": "本命夥伴",
+        "description": "由使用者自行輸入或選擇，不受測驗分數影響，不被系統否定。測驗結果欄位會同時展示本命夥伴，作為對照或補充。"
+      },
+      "en": {
+        "name": "Favorite Partner",
+        "description": "Chosen freely by the user — not overridden by quiz results. Shown alongside recommendations as a companion or personal anchor."
+      },
+      "ja": {
+        "name": "推しポケモン",
+        "description": "ユーザーが自由に選んだポケモンです。診断結果に関係なく表示され、否定されることはありません。"
+      },
+      "overridable": false
+    },
+    "mainGuardian": {
+      "slotId": "mainGuardian",
+      "zh_tw": {
+        "name": "今日主守護",
+        "description": "依出生五行偏向、心理測驗標籤與場景條件，綜合評分後推薦的第一名寶可夢。"
+      },
+      "en": {
+        "name": "Today's Main Guardian",
+        "description": "The top-scored Pokémon based on birth element profile, quiz state tags, and scene fit."
+      },
+      "ja": {
+        "name": "今日の主守護ポケモン",
+        "description": "生まれの五行傾向、診断タグ、場所の条件を総合的にスコアリングして、最も合うポケモンを推薦します。"
+      },
+      "overridable": false
+    },
+    "sceneSupport": {
+      "slotId": "sceneSupport",
+      "zh_tw": {
+        "name": "場景補位",
+        "description": "最符合使用者選擇放置空間（玄關、臥室、書桌等）場景屬性的寶可夢，側重場景五行與標籤命中。"
+      },
+      "en": {
+        "name": "Scene Support",
+        "description": "The Pokémon best matched to the user's chosen placement space — prioritizes scene element and tag alignment."
+      },
+      "ja": {
+        "name": "場所のサポート役",
+        "description": "ユーザーが選んだ場所（玄関・寝室・デスクなど）に最も合うポケモン。場所の五行とタグの一致を優先します。"
+      },
+      "overridable": false
+    },
+    "balanceSupport": {
+      "slotId": "balanceSupport",
+      "zh_tw": {
+        "name": "平衡補位",
+        "description": "用來補足使用者目前較弱或欠缺的五行或心理狀態。若主守護已補足主要需求，此欄位提供不同角度的配合選項。"
+      },
+      "en": {
+        "name": "Balance Support",
+        "description": "A complementary Pokémon that addresses the user's weakest element or unmet state — offering a different angle from the main guardian."
+      },
+      "ja": {
+        "name": "バランスサポート役",
+        "description": "ユーザーに不足している五行や心の状態を補うポケモン。メイン守護と異なる視点でサポートします。"
+      },
+      "overridable": false
+    }
+  },
+
+  "tagElementMap": {
+    "_note": "心理測驗 tags 與五行的對應表。推薦引擎用此表將 quizTags 累積轉換為五行需求分數，同時支援 watch 場景動態五行推導。tags 採繁中內部標籤，不隨語系切換。",
+    "木": ["成長", "學習", "重新開始", "啟動", "舒展", "新開始"],
+    "火": ["行動", "推進", "熱情", "明亮", "爆發力"],
+    "土": ["安定", "穩定", "守護", "安心", "生活感", "休息", "承載", "人際", "好感", "陪伴"],
+    "金": ["專注", "效率", "秩序", "決策", "清晰", "分析"],
+    "水": ["修復", "睡眠", "柔和", "流動", "低刺激", "情緒", "直覺", "距離感", "流動感"]
+  },
+
+  "fiveElementRelations": {
+    "_note": "五行相生相剋關係。相生用於間接補位加分（+4/+2），相剋用於溫和調節過旺狀態（+2）。文案上使用『平衡』『降溫』『整理過旺狀態』等表述，不使用壓制性語氣。",
+    "generates": {
+      "木": "火",
+      "火": "土",
+      "土": "金",
+      "金": "水",
+      "水": "木"
+    },
+    "generatedBy": {
+      "木": "水",
+      "火": "木",
+      "土": "火",
+      "金": "土",
+      "水": "金"
+    },
+    "controls": {
+      "木": "土",
+      "土": "水",
+      "水": "火",
+      "火": "金",
+      "金": "木"
+    },
+    "controlledBy": {
+      "木": "金",
+      "火": "水",
+      "土": "木",
+      "金": "火",
+      "水": "土"
+    }
+  },
+
+  "officialLinkPolicy": {
+    "embedAllowed": false,
+    "previewAllowed": false,
+    "frontendRule": "前端不得使用 official30th.link 作為 img src，亦不得以任何方式直接顯示官方圖片",
+    "displayPolicy": "結果頁只顯示寶可夢編號、名稱與推薦理由",
+    "externalLinkCta": {
+      "zh_tw": "前往官方 30 週年頁面查看圖案",
+      "en":    "View the official 30th anniversary artwork",
+      "ja":    "公式30周年ページでアイコンを見る"
+    },
+    "officialPageBaseUrl": "https://www.pokemon.co.jp/ex/30th_logo/",
+    "usageNote": "公開版結果頁僅提供外部連結，不直接嵌入或重新散布官方圖片。"
+  },
+
+  "disclaimer": {
+    "zh_tw": "本測驗為非官方粉絲向互動企劃。寶可夢相關名稱與圖像權利屬於其各自權利人。本測驗僅依名稱、編號與自訂標籤進行推薦，不直接使用或展示官方圖片。若想查看 30 週年特別圖案，請前往 Pokémon 官方 30 週年網站，並依官方利用規約使用素材。一起為 Pokémon 30 週年同樂。",
+    "en": "This is a fan-made interactive project, not affiliated with or endorsed by The Pokémon Company or Nintendo. All Pokémon names, characters, and related imagery are the property of their respective rights holders. Recommendations are based solely on names, Pokédex numbers, and custom tags — no official artwork is displayed or redistributed. If you'd like to view the 30th anniversary artwork, please visit the official Pokémon website and follow their terms of use. Happy 30th, Pokémon.",
+    "ja": "これは非公式のファン向けインタラクティブ企画です。ポケモンに関連する名称・キャラクター・画像の権利は各権利者に帰属します。本診断は名前・全国図鑑番号・独自タグのみをもとに推薦を行い、公式画像の表示や再配布は一切行いません。30周年の特別アイコンをご覧になりたい方は、ポケモン公式サイトをご確認のうえ、ご利用規約に従ってお楽しみください。ポケモン30周年、一緒に盛り上がりましょう！"
+  }
+}

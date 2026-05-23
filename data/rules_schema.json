@@ -1,0 +1,431 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Pokémon Guardian Game — Rules Schema",
+  "description": "描述 data/rules.json 每個區塊的資料結構、欄位用途與是否必填",
+  "type": "object",
+  "required": [
+    "_meta", "locale", "fiveElements", "birthElementRules",
+    "quizQuestions", "sceneRules", "scoringWeights",
+    "resultSlots", "officialLinkPolicy", "disclaimer"
+  ],
+  "properties": {
+
+    "_meta": {
+      "type": "object",
+      "required": true,
+      "description": "規則檔的版本與說明資訊，不參與邏輯運算",
+      "properties": {
+        "version":     { "type": "string", "description": "語意化版本號，格式 major.minor.patch" },
+        "createdAt":   { "type": "string", "description": "建立日期，格式 YYYY-MM-DD" },
+        "description": { "type": "string", "description": "本規則檔的用途說明" },
+        "note":        { "type": "string", "description": "備注或免責聲明" }
+      }
+    },
+
+    "locale": {
+      "type": "object",
+      "required": true,
+      "description": "三語系的語氣設定與 UI 文案。支援 zh_tw / en / ja，可由前端依使用者語言選擇切換。",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "language": { "type": "string", "description": "語言顯示名稱" },
+          "tone": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "該語系的核心語氣風格詞，指導結果頁文案撰寫方向，不直翻跨語系"
+          },
+          "uiLabels": {
+            "type": "object",
+            "description": "前端 UI 按鈕與標題文案",
+            "properties": {
+              "quizTitle":       { "type": "string" },
+              "resultTitle":     { "type": "string" },
+              "retakeBtn":       { "type": "string" },
+              "shareBtn":        { "type": "string" },
+              "officialLinkBtn": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+
+    "fiveElements": {
+      "type": "object",
+      "required": true,
+      "description": "五行（木火土金水）的語意定義與三語系說明。前端用於顯示推薦理由與結果頁說明文字。",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["element", "zh_tw", "en", "ja"],
+        "properties": {
+          "element": {
+            "type": "string",
+            "enum": ["木", "火", "土", "金", "水"],
+            "description": "五行主行識別字"
+          },
+          "zh_tw": {
+            "type": "object",
+            "properties": {
+              "meaning":     { "type": "array", "items": { "type": "string" }, "description": "語意關鍵詞（繁中）" },
+              "description": { "type": "string", "description": "使用者友善的完整說明（繁中）" }
+            }
+          },
+          "en": {
+            "type": "object",
+            "properties": {
+              "meaning":     { "type": "array", "items": { "type": "string" }, "description": "語意關鍵詞（英文，文化轉譯）" },
+              "description": { "type": "string", "description": "使用者友善的完整說明（英文）" }
+            }
+          },
+          "ja": {
+            "type": "object",
+            "properties": {
+              "meaning":     { "type": "array", "items": { "type": "string" }, "description": "語意關鍵詞（日文，文化轉譯）" },
+              "description": { "type": "string", "description": "使用者友善的完整說明（日文）" }
+            }
+          }
+        }
+      }
+    },
+
+    "birthElementRules": {
+      "type": "object",
+      "required": true,
+      "description": "依出生月份、生日個位數、出生時辰推算使用者五行偏向的簡化規則。結果作為 birthElementWeight（0.35）的評分依據。",
+      "properties": {
+        "_note": { "type": "string", "description": "說明此規則為簡化推算，非命理精確計算" },
+        "monthRules": {
+          "type": "object",
+          "required": true,
+          "description": "出生月份對應五行偏向，每符合一個月份 +weight 分",
+          "properties": {
+            "scores": {
+              "type": "object",
+              "description": "key 為五行，value 為對應月份數字陣列（1–12）",
+              "additionalProperties": { "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 12 } }
+            },
+            "weight":      { "type": "integer", "description": "符合時加分值（預設 +2）" },
+            "description": { "type": "object", "description": "三語系說明" }
+          }
+        },
+        "dayDigitRules": {
+          "type": "object",
+          "required": true,
+          "description": "生日個位數（0–9）對應五行補位，每符合一個 +weight 分",
+          "properties": {
+            "scores": {
+              "type": "object",
+              "description": "key 為五行，value 為對應個位數陣列（0–9）",
+              "additionalProperties": { "type": "array", "items": { "type": "integer", "minimum": 0, "maximum": 9 } }
+            },
+            "weight":      { "type": "integer", "description": "符合時加分值（預設 +1）" },
+            "description": { "type": "object", "description": "三語系說明" }
+          }
+        },
+        "hourRules": {
+          "type": "object",
+          "required": true,
+          "description": "出生時辰（十二地支）對應五行。前端應提供地支選單或 24 小時制時間選擇並自動對應。",
+          "properties": {
+            "scores": {
+              "type": "object",
+              "description": "key 為五行，value 為對應地支字串陣列",
+              "additionalProperties": { "type": "array", "items": { "type": "string" } }
+            },
+            "chinesHourMap": {
+              "type": "object",
+              "description": "地支對應 24 小時制時段，供前端顯示選單用",
+              "additionalProperties": { "type": "string" }
+            },
+            "weight":      { "type": "integer", "description": "符合時加分值（預設 +1）" },
+            "description": { "type": "object", "description": "三語系說明" },
+            "birthTime": {
+              "type": "object",
+              "description": "出生時辰的選填設定。因為許多使用者不知道自己的出生時辰，此欄位定義略過時的行為，避免強制填寫造成流程中斷。",
+              "properties": {
+                "optional": {
+                  "type": "boolean",
+                  "const": true,
+                  "description": "固定為 true，出生時辰為選填欄位，不得強制要求"
+                },
+                "unknownValue": {
+                  "type": "string",
+                  "const": "unknown",
+                  "description": "使用者選擇略過時前端應傳入的值，推薦邏輯接收此值後跳過時辰計分"
+                },
+                "unknownScore": {
+                  "type": "integer",
+                  "const": 0,
+                  "description": "略過時辰時的計分值，固定為 0，不懲罰也不加分"
+                },
+                "unknownLabel": {
+                  "type": "object",
+                  "description": "三語系的略過選項文案，前端用於顯示選單中的「不知道」選項",
+                  "properties": {
+                    "zh_tw": { "type": "string" },
+                    "en":    { "type": "string" },
+                    "ja":    { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "quizQuestions": {
+      "type": "array",
+      "required": true,
+      "description": "心理測驗題目列表，目前 5 題，每題支援三語系。每題選項附帶 tags 陣列，作為 quizStateWeight（0.25）的標籤匹配來源。",
+      "items": {
+        "type": "object",
+        "required": ["id", "order", "zh_tw", "en", "ja"],
+        "properties": {
+          "id":    { "type": "string", "description": "題目唯一識別碼，格式 q1–q5" },
+          "order": { "type": "integer", "description": "題目顯示順序" },
+          "zh_tw": { "$ref": "#/definitions/QuestionLocale" },
+          "en":    { "$ref": "#/definitions/QuestionLocale" },
+          "ja":    { "$ref": "#/definitions/QuestionLocale" }
+        }
+      }
+    },
+
+    "sceneRules": {
+      "type": "object",
+      "required": true,
+      "description": "六個放置場景的規則定義（玄關、臥室、書桌、辦公室、手錶桌面、隨身包包）。場景由 q3 題目選項觸發，影響 sceneFitWeight（0.25）的評分。",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["sceneId", "zh_tw", "en", "ja", "suitableElements", "suitableYinYang", "boostTags", "avoidTags", "resultTone"],
+        "properties": {
+          "sceneId":          { "type": "string", "description": "場景識別碼，對應 q3 選項的 sceneId 欄位" },
+          "zh_tw":            { "type": "object", "properties": { "name": { "type": "string" }, "tone": { "type": "string" } } },
+          "en":               { "type": "object", "properties": { "name": { "type": "string" }, "tone": { "type": "string" } } },
+          "ja":               { "type": "object", "properties": { "name": { "type": "string" }, "tone": { "type": "string" } } },
+          "suitableElements": {
+            "type": "array",
+            "items": { "type": "string", "enum": ["木", "火", "土", "金", "水"] },
+            "description": "適合此場景的五行列表。若 dynamicElementMode 為 true，此陣列應為空，五行由推薦邏輯動態決定。"
+          },
+          "dynamicElementMode": {
+            "type": "boolean",
+            "description": "若為 true，表示此場景不固定五行，推薦邏輯需從 dynamicElementSource 指定的來源動態推導適合的五行。目前只有 watch 場景啟用。"
+          },
+          "dynamicElementSource": {
+            "type": "string",
+            "enum": ["quizTags"],
+            "description": "dynamicElementMode 為 true 時必填。目前唯一合法值為 'quizTags'，表示從使用者心理測驗答案的 tags 累積推導五行偏向，再用於場景比對。"
+          },
+          "suitableYinYang": {
+            "type": "array",
+            "items": { "type": "string", "enum": ["陰", "陽", "中性"] },
+            "description": "適合此場景的陰陽屬性"
+          },
+          "boostTags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "加分標籤：寶可夢的 keywords 或 psychStates 命中此列表每個 +3 分"
+          },
+          "avoidTags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "避免標籤：命中一個 -5 分"
+          },
+          "resultTone": {
+            "description": "結果頁用於描述此場景推薦語氣的關鍵詞。可為字串陣列（向下相容舊格式），或三語系物件（zh_tw / en / ja，每個值為字串陣列）。",
+            "oneOf": [
+              {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "zh_tw": { "type": "array", "items": { "type": "string" } },
+                  "en":    { "type": "array", "items": { "type": "string" } },
+                  "ja":    { "type": "array", "items": { "type": "string" } }
+                }
+              }
+            ]
+          },
+          "_note": { "type": "string", "description": "該場景的補充說明（選填）" }
+        }
+      }
+    },
+
+    "scoringWeights": {
+      "type": "object",
+      "required": true,
+      "description": "推薦算分系統的各項權重與分項規則。所有分數加總後按 topLevelWeights 正規化再排序。",
+      "properties": {
+        "_note": { "type": "string" },
+        "topLevelWeights": {
+          "type": "object",
+          "description": "四大評分維度的權重，合計應等於 1.0",
+          "properties": {
+            "basePopularityWeight": { "type": "number", "description": "人氣評分權重（0.15）" },
+            "birthElementWeight":   { "type": "number", "description": "出生五行符合度權重（0.35）" },
+            "quizStateWeight":      { "type": "number", "description": "心理測驗標籤匹配權重（0.25）" },
+            "sceneFitWeight":       { "type": "number", "description": "場景適合度權重（0.25）" }
+          }
+        },
+        "detailScores": {
+          "type": "object",
+          "description": "各加分項目的分數與觸發條件",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "score":     { "description": "加分值（數字或說明字串）" },
+              "condition": { "type": "string", "description": "觸發此加分的條件描述" }
+            }
+          }
+        },
+        "penalties": {
+          "type": "object",
+          "description": "扣分規則：避免過度集中於同一五行或不適合場景的寶可夢",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "score":     { "type": "integer", "description": "扣分值（負數）" },
+              "condition": { "type": "string", "description": "觸發扣分的條件描述" }
+            }
+          }
+        }
+      }
+    },
+
+    "resultSlots": {
+      "type": "object",
+      "required": true,
+      "description": "測驗結果的四個顯示槽位定義。每個槽位有不同的推薦邏輯與語意定位。",
+      "properties": {
+        "favoritePartner": { "$ref": "#/definitions/ResultSlot", "description": "本命夥伴：使用者自選，不被系統否定" },
+        "mainGuardian":    { "$ref": "#/definitions/ResultSlot", "description": "今日主守護：綜合評分第一名" },
+        "sceneSupport":    { "$ref": "#/definitions/ResultSlot", "description": "場景補位：場景適合度最高" },
+        "balanceSupport":  { "$ref": "#/definitions/ResultSlot", "description": "平衡補位：補足最弱五行或狀態" }
+      }
+    },
+
+    "tagElementMap": {
+      "type": "object",
+      "required": true,
+      "description": "心理測驗 tags 與五行的對應表。推薦引擎使用此表將 quizTags 轉換為五行需求分數，並支援 watch 場景（dynamicElementMode: true）的動態五行推導。tags 採繁中內部標籤，不隨語系切換，可穩定與 pokemon.json 的 keywords / psychStates 比對。",
+      "properties": {
+        "_note": { "type": "string" }
+      },
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "string" },
+          { "type": "array", "items": { "type": "string" }, "description": "屬於此五行的 tag 字串列表" }
+        ]
+      }
+    },
+
+    "fiveElementRelations": {
+      "type": "object",
+      "required": true,
+      "description": "五行相生相剋關係表。推薦引擎使用此表計算間接補位分數（相生 +4/+2）與過旺狀態調節分數（相剋 +2）。直接補缺仍是最高優先（+10），相生為輔助（不超過直接補缺），相剋僅作溫和調節。",
+      "properties": {
+        "_note": { "type": "string" },
+        "generates": {
+          "type": "object",
+          "description": "A 生 B：key 五行生出 value 五行。例如 木→火。用於計算 generatingElementScore：若寶可夢五行可生出使用者 primaryNeed/secondaryNeed，給予間接補位加分。",
+          "additionalProperties": { "type": "string", "enum": ["木", "火", "土", "金", "水"] }
+        },
+        "generatedBy": {
+          "type": "object",
+          "description": "A 被 B 生：key 五行由 value 五行生出。例如 木←水。方便反向查詢。",
+          "additionalProperties": { "type": "string", "enum": ["木", "火", "土", "金", "水"] }
+        },
+        "controls": {
+          "type": "object",
+          "description": "A 剋 B：key 五行剋制 value 五行。例如 木剋土。用於計算 balancingElementScore：若使用者五行偏旺，寶可夢五行可調節/平衡該過旺狀態，給予溫和加分。文案用語：平衡、降溫、整理過旺狀態。",
+          "additionalProperties": { "type": "string", "enum": ["木", "火", "土", "金", "水"] }
+        },
+        "controlledBy": {
+          "type": "object",
+          "description": "A 被 B 剋：key 五行被 value 五行剋制。方便反向查詢。",
+          "additionalProperties": { "type": "string", "enum": ["木", "火", "土", "金", "水"] }
+        }
+      }
+    },
+
+    "officialLinkPolicy": {
+      "type": "object",
+      "required": true,
+      "description": "官方 30 週年圖片的使用政策。前端必須遵守此政策，不得直接嵌入官方圖片。",
+      "properties": {
+        "embedAllowed":     { "type": "boolean", "const": false },
+        "previewAllowed":   { "type": "boolean", "const": false },
+        "frontendRule":     { "type": "string", "description": "給前端開發者的實作約束說明" },
+        "displayPolicy":    { "type": "string", "description": "結果頁允許顯示的內容說明" },
+        "externalLinkCta": {
+          "type": "object",
+          "description": "三語系的外部連結按鈕文案",
+          "properties": {
+            "zh_tw": { "type": "string" },
+            "en":    { "type": "string" },
+            "ja":    { "type": "string" }
+          }
+        },
+        "officialPageBaseUrl": { "type": "string", "format": "uri", "description": "官方 30 週年頁面根網址" },
+        "usageNote":           { "type": "string", "description": "使用說明，與 pokemon.json 中 official30th.usageNote 一致" }
+      }
+    },
+
+    "disclaimer": {
+      "type": "object",
+      "required": true,
+      "description": "三語系的非官方聲明文字，需顯示於結果頁或頁尾。英文與日文為文化自然轉譯，非逐字翻譯。",
+      "properties": {
+        "zh_tw": { "type": "string" },
+        "en":    { "type": "string" },
+        "ja":    { "type": "string" }
+      }
+    }
+  },
+
+  "definitions": {
+    "QuestionLocale": {
+      "type": "object",
+      "required": ["question", "options"],
+      "properties": {
+        "question": { "type": "string", "description": "題目問句文字" },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "label", "text", "tags"],
+            "properties": {
+              "id":      { "type": "string", "description": "選項唯一識別碼，格式 q{n}{a-f}" },
+              "label":   { "type": "string", "description": "前端顯示標籤（A/B/C/D/E/F）" },
+              "text":    { "type": "string", "description": "選項文字（該語系）" },
+              "tags":    {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "此選項對應的標籤，用於和寶可夢 keywords/psychStates 做匹配計分"
+              },
+              "sceneId": {
+                "type": "string",
+                "description": "（q3 場景題專用）對應 sceneRules 的 sceneId",
+                "optional": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "ResultSlot": {
+      "type": "object",
+      "required": ["slotId", "zh_tw", "en", "ja", "overridable"],
+      "properties": {
+        "slotId":       { "type": "string", "description": "槽位識別碼" },
+        "zh_tw":        { "type": "object", "properties": { "name": { "type": "string" }, "description": { "type": "string" } } },
+        "en":           { "type": "object", "properties": { "name": { "type": "string" }, "description": { "type": "string" } } },
+        "ja":           { "type": "object", "properties": { "name": { "type": "string" }, "description": { "type": "string" } } },
+        "overridable":  { "type": "boolean", "description": "此槽位是否可被使用者手動覆蓋（favoritePartner 為 false）" }
+      }
+    }
+  }
+}

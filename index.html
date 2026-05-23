@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="從出生五行、目前狀態與生活場景，找出最適合陪在你身邊的寶可夢守護夥伴。非官方粉絲向企劃。">
+
+  <title>寶可夢守護位 | Pokémon Aura Match</title>
+
+  <!--
+    ╔══════════════════════════════════════════════════════════╗
+    ║  版權聲明                                                ║
+    ║  本專案為非官方粉絲向互動企劃。                          ║
+    ║  寶可夢相關名稱與圖像權利屬於其各自權利人。              ║
+    ║  本專案不使用、不嵌入、不重新散布任何官方圖片。          ║
+    ║  official30th.link 僅作外部連結，不作為 img src 使用。   ║
+    ╚══════════════════════════════════════════════════════════╝
+  -->
+
+  <!-- 禁止搜尋引擎索引（粉絲企劃，避免侵權疑慮） -->
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌟</text></svg>">
+</head>
+<body>
+  <!-- 主應用程式掛載點 -->
+  <div id="app">
+    <!-- 初始 loading 狀態，JavaScript 載入後接管 -->
+    <div class="pg-main">
+      <div class="loading-screen">
+        <div class="spinner"></div>
+        <p>載入中…</p>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    載入順序：
+    1. recommendation.browser.js  →  window.RecommendationEngine
+    2. i18n.js                    →  window.I18N
+    3. app.js                     →  啟動 App（等待 DOMContentLoaded）
+
+    ⚠️ 前端規則（開發者請遵守）：
+    - 不得使用 official30th.link 作為 <img src> 或 background-image
+    - 不得以任何方式直接顯示官方 30 週年圖片
+    - 結果卡片使用自製 placeholder（編號 + 名稱首字 + 五行色）
+  -->
+  <script src="assets/js/recommendation.browser.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

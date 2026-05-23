@@ -1,0 +1,226 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Pokémon",
+  "description": "單一寶可夢資料結構，由 source/pokemon_table.md 轉換而來",
+  "type": "object",
+  "required": [
+    "id",
+    "dexNo",
+    "slug",
+    "official30th",
+    "name",
+    "types",
+    "abilities",
+    "color",
+    "keywords",
+    "psychStates",
+    "fiveElement",
+    "popularityScore",
+    "sourceRow"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "四位數字字串的全國圖鑑編號，例如 0001、0025、1025",
+      "required": true,
+      "example": "0001"
+    },
+    "dexNo": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "整數形式的全國圖鑑編號",
+      "required": true,
+      "example": 1
+    },
+    "slug": {
+      "type": "string",
+      "description": "由英文名稱生成的 URL-safe 識別碼，全小寫，空白轉連字號",
+      "required": true,
+      "example": "bulbasaur"
+    },
+    "official30th": {
+      "type": "object",
+      "description": "Pokémon 30 週年官方圖示連結資訊",
+      "required": true,
+      "properties": {
+        "fileName": {
+          "type": "string",
+          "description": "圖片檔名，例如 0001.png"
+        },
+        "link": {
+          "type": "string",
+          "description": "官方圖片或頁面的外部連結 URL；若無法取得則為空字串"
+        },
+        "previewAllowed": {
+          "type": "boolean",
+          "description": "固定為 false，不直接嵌入官方圖片",
+          "const": false
+        },
+        "usageNote": {
+          "type": "string",
+          "description": "使用說明，提示公開版僅提供外部連結"
+        }
+      }
+    },
+    "name": {
+      "type": "object",
+      "description": "寶可夢名稱（三語）",
+      "required": true,
+      "properties": {
+        "zh_tw": {
+          "type": "string",
+          "description": "繁體中文名稱"
+        },
+        "ja": {
+          "type": "string",
+          "description": "日文名稱"
+        },
+        "en": {
+          "type": "string",
+          "description": "英文名稱"
+        }
+      }
+    },
+    "types": {
+      "type": "object",
+      "description": "屬性陣列（三語）",
+      "required": true,
+      "properties": {
+        "zh_tw": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "中文屬性列表"
+        },
+        "ja": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "日文屬性列表"
+        },
+        "en": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "英文屬性列表"
+        }
+      }
+    },
+    "abilities": {
+      "type": "object",
+      "description": "特性陣列（三語），已移除「隱藏：」前綴",
+      "required": true,
+      "properties": {
+        "zh_tw": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ja": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "en": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "color": {
+      "type": "object",
+      "description": "物種主要顏色（三語）",
+      "required": true,
+      "properties": {
+        "zh_tw": {
+          "type": "string"
+        },
+        "ja": {
+          "type": "string"
+        },
+        "en": {
+          "type": "string"
+        }
+      }
+    },
+    "keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "聯想詞語，每隻寶可夢通常 5 個",
+      "required": true
+    },
+    "psychStates": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "心理狀態，每隻寶可夢通常 5 個",
+      "required": true
+    },
+    "fiveElement": {
+      "type": "object",
+      "description": "五行屬性，依核心意象推導，非官方分類",
+      "required": true,
+      "properties": {
+        "raw": {
+          "type": "string",
+          "description": "原始文字，例如 陰木、中性土"
+        },
+        "yinYang": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "陰",
+            "陽",
+            "中性",
+            null
+          ],
+          "description": "陰陽分類"
+        },
+        "main": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "木",
+            "火",
+            "土",
+            "金",
+            "水",
+            null
+          ],
+          "description": "五行主行"
+        }
+      }
+    },
+    "popularityScore": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1,
+      "maximum": 5,
+      "description": "人氣評分 1-5，綜合多項公開問卷與對戰使用率，非官方總榜",
+      "required": true
+    },
+    "sourceRow": {
+      "type": "integer",
+      "description": "對應來源 Markdown 表格的資料列序號（從 1 開始）",
+      "required": true
+    }
+  }
+}
