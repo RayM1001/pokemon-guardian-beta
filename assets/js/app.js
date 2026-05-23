@@ -723,7 +723,12 @@
   function renderStep5(container) {
     buildProgress(5, container);
 
-    if (!state.result) computeResult();
+    // locale 切換或 localStorage 還原後重新產生推薦理由
+    const currentLocale = I18N.getLocale();
+    if (!state.result ||
+        (state.result.inputSummary && state.result.inputSummary.locale !== currentLocale)) {
+      computeResult();
+    }
     const res   = state.result;
     const slots = res.resultSlots;
     const loc   = I18N.getLocale();

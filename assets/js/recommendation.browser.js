@@ -212,54 +212,95 @@
   }
 
   // ── 7. buildRecommendationReason ───────────────────────────────────────────
-  function buildRecommendationReason(pokemon, scoreDetail, context, locale) {
-    const { elementNeeds, quizTags, sceneId } = context;
-    const name = (pokemon.name && (pokemon.name.zh_tw || pokemon.name.en)) || `#${pokemon.id}`;
-    const elem = pokemon.fiveElement && pokemon.fiveElement.main;
-    const pop  = pokemon.popularityScore;
-    const parts = [];
+  // slotId: 'favoritePartner' | 'mainGuardian' | 'sceneSupport' | 'balanceSupport' | null
+  function buildRecommendationReason(pokemon, scoreDetail, context, locale, slotId) {
+    const loc    = locale || 'zh_tw';
+    const { sceneId } = context;
 
-    const quality = elem ? ELEM_QUALITY[elem] : null;
+    // ── favoritePartner: 固定文案，三語系 ────────────────────────────────────
+    if (slotId === 'favoritePartner') {
+      const fp = {
+        zh_tw: '這位夥伴代表你原本的喜好與熟悉感，會保留在今天的配置裡。其他推薦只是補充不同場景的參考。',
+        en:    "This partner reflects your personal favorite and stays with you in today's setup. The other suggestions simply add support for different moments or spaces.",
+        ja:    'このポケモンは、あなたが選んだ大切な相棒として今日の配置にも残ります。ほかのおすすめは、場面に合わせた参考として楽しんでください。',
+      };
+      return fp[loc] || fp.zh_tw;
+    }
+
+    const elem = pokemon.fiveElement && pokemon.fiveElement.main;
+
+    // ── 元素描述（依分數層級 × 語系） ────────────────────────────────────────
+    const elemDesc = {
+      zh_tw: {
+        木: { h: '適合正在開展新事物、學習或需要重新出發的時刻', m: '帶來溫和的成長感，為今日配置補充一點活力', g: '以輔助的方式，間接為今日狀態帶來一點新生感', b: '為整體配置帶來一點新鮮的成長氣息' },
+        火: { h: '在需要啟動、推進或提振幹勁的時候帶來助力', m: '帶來輕微的推進感，讓今日節奏更流暢', g: '以間接的方式，支援今日的活力與推動力', b: '為偏靜的配置帶來一點溫暖與積極感' },
+        土: { h: '在需要落地、休息或讓自己安定下來的時刻帶來踏實感', m: '帶來溫和的穩定感，讓今日配置更踏實', g: '以輔助的方式，間接強化今日的穩定基礎', b: '為今日配置增添一份安心與踏實' },
+        金: { h: '有助於整理思緒、提升專注力與效率', m: '帶來輕微的整理感，讓頭腦保持清晰', g: '以間接的方式，支援今日的專注與條理', b: '為配置帶來一點清晰感與條理感' },
+        水: { h: '適合需要修復、放鬆或慢慢整理狀態的時刻', m: '帶來溫和的修復感，讓今日步調放慢一點', g: '以輔助的方式，間接支援今日的放鬆與修復', b: '為配置帶來一點舒緩，讓整體節奏更柔和' },
+      },
+      en: {
+        木: { h: "a good match when you're looking to begin something new, learn, or find a fresh direction", m: 'brings a gentle sense of growth and renewal to round out today\'s setup', g: 'quietly works in the background to add a spark of new energy to today\'s balance', b: "adds a touch of fresh, growing energy to today's mix" },
+        火: { h: "works well when you need to get started, push forward, or lift your energy", m: "adds a light sense of momentum to keep today's rhythm moving", g: "provides quiet support for today's drive and forward energy", b: "adds a touch of warmth and positive energy to balance things out" },
+        土: { h: "a good fit when you need to slow down, rest, or feel more settled and grounded", m: "brings a calming steadiness that helps anchor today's setup", g: "quietly backs up today's sense of stability from behind the scenes", b: "adds a grounding, reassuring quality to today's overall feel" },
+        金: { h: "helps clear your head, sharpen focus, and bring a sense of order to the day", m: "adds a light touch of clarity to help keep things organized and on track", g: "provides quiet support for today's focus and mental clarity", b: "brings a bit of structure and clarity to balance today's setup" },
+        水: { h: "a good match when you need to slow down, recover, or gently sort through how you're feeling", m: "brings a soft, restorative quality that helps ease today's pace", g: "quietly supports today's need for rest and gentle recovery", b: "adds a soothing note that softens the overall energy of today's setup" },
+      },
+      ja: {
+        木: { h: '新しいことを始めたい時や、学びや再出発が必要な時に向いています', m: 'やさしい成長感を添えて、今日の配置に活気をプラスしてくれます', g: '間接的なサポートで、今日の状態にそっと新しい息吹を加えてくれます', b: '今日の配置に、フレッシュな成長のエネルギーをそっと添えてくれます' },
+        火: { h: '動き出したい時、前へ進みたい時、気力を高めたい時に力を添えてくれます', m: 'やわらかな推進力を加えて、今日のリズムをスムーズにしてくれます', g: '間接的に今日の活力と前進するエネルギーをサポートしてくれます', b: '落ち着いた配置に、少し温かみと前向きさを加えてくれます' },
+        土: { h: 'ゆっくり休みたい時や、気持ちを落ち着かせて安定したい時に寄り添ってくれます', m: '穏やかな安定感をプラスして、今日の配置をより落ち着いたものにしてくれます', g: '間接的に今日の安定感をバックアップしてくれます', b: '今日の配置に、安心感と落ち着きをそっと添えてくれます' },
+        金: { h: '頭を整理したい時や、集中力や効率を高めたい時に助けになってくれます', m: '軽やかな整理感を加えて、頭の中をクリアに保ってくれます', g: '間接的に今日の明晰さと集中をそっとサポートしてくれます', b: '今日の配置に、すっきりとした条理感をプラスしてくれます' },
+        水: { h: '少しペースを落として休みたい時や、じっくり状態を整えたい時に向いています', m: '穏やかな癒し感を添えて、今日の歩調をゆるやかにしてくれます', g: '間接的に今日の休息と回復をそっと支えてくれます', b: '少し緊張感のある配置に、やさしい和らぎをそっと加えてくれます' },
+      },
+    };
+
+    // ── 場景名稱（三語系） ────────────────────────────────────────────────────
+    const sceneNames = {
+      zh_tw: { entrance: '玄關', bedroom: '臥室', desk: '書桌', office: '辦公室', watch: '手錶桌面', bag: '隨身包包' },
+      en:    { entrance: 'your entryway', bedroom: 'the bedroom', desk: 'your desk', office: 'the office', watch: 'your watch face', bag: 'your everyday bag' },
+      ja:    { entrance: '玄関', bedroom: '寝室', desk: 'デスク', office: 'オフィス', watch: 'ウォッチ画面', bag: 'バッグ' },
+    };
+    const sceneName = (sceneNames[loc] || sceneNames.zh_tw)[sceneId] || sceneId;
+
+    // ── 槽位前綴（三語系） ────────────────────────────────────────────────────
+    const slotPrefixes = {
+      zh_tw: { mainGuardian: '作為今日的主要守護，', sceneSupport: '', balanceSupport: '' },
+      en:    { mainGuardian: "As today's main guardian, ", sceneSupport: '', balanceSupport: '' },
+      ja:    { mainGuardian: '今日のメイン守護として、', sceneSupport: '', balanceSupport: '' },
+    };
+    const prefix = ((slotPrefixes[loc] || slotPrefixes.zh_tw)[slotId]) || '';
+
+    const locDesc = (elemDesc[loc] || elemDesc.zh_tw)[elem] || {};
+    let core = '';
 
     if (scoreDetail.directElementScore >= 10) {
-      const desc = {
-        木: '適合正在開展新事物、學習或需要重新出發的時刻',
-        火: '在需要啟動、推進或提振幹勁的時候帶來助力',
-        土: '在需要落地、休息或讓自己安定下來的時刻帶來踏實感',
-        金: '有助於整理思緒、提升專注力與效率',
-        水: '適合需要修復、放鬆、或慢慢整理狀態的時刻',
-      };
-      parts.push(`${name}帶有${quality || '獨特的五行氣質'}，${desc[elem] || ''}`);
+      core = locDesc.h || '';
     } else if (scoreDetail.directElementScore >= 6) {
-      parts.push(`${name}帶有${quality || '輔助的五行氣質'}，在今日配置中作為補位夥伴`);
+      core = locDesc.m || '';
     } else if (scoreDetail.generatingElementScore > 0) {
-      const note = scoreDetail.elementRelationNotes && scoreDetail.elementRelationNotes[0];
-      parts.push(`${name}帶有${quality || '的五行氣質'}，透過相生關係間接支援今日的狀態需求`);
-      if (note) parts.push(`（${note.replace(/\(\+\d+\)/g, '')}）`);
+      core = locDesc.g || '';
     } else if (scoreDetail.balancingElementScore > 0) {
-      parts.push(`${name}帶有${quality || '的五行氣質'}，有助於平衡與降溫當前偏旺的狀態`);
+      core = locDesc.b || '';
     } else {
-      parts.push(`${name}在今日的配置中擔任場景支援角色`);
+      const generic = { zh_tw: '在今日的配置中帶來穩定的支援', en: "adds a steady, supportive presence to today's setup", ja: '今日の配置にそっと安定したサポートを添えてくれます' };
+      core = generic[loc] || generic.zh_tw;
     }
 
-    const hitKw  = (pokemon.keywords    || []).filter(k => quizTags.includes(k));
-    const hitPs  = (pokemon.psychStates || []).filter(p => quizTags.includes(p));
-    const hitAll = [...new Set([...hitKw, ...hitPs])];
-    if (hitAll.length > 0) {
-      parts.push(`與你目前「${hitAll.slice(0, 3).join('、')}」的狀態相呼應`);
-    }
+    const parts = [prefix + core];
 
-    const sceneNameMap = {
-      entrance: '玄關', bedroom: '臥室', desk: '書桌',
-      office: '辦公室', watch: '手錶桌面', bag: '隨身包包',
-    };
-    const sceneName = sceneNameMap[sceneId] || sceneId;
-
+    // ── 場景匹配補充（只在有場景加分時附加） ─────────────────────────────────
     if (scoreDetail.sceneElementScore > 0 || scoreDetail.yinYangScore > 0 || scoreDetail.sceneTagScore > 0) {
-      parts.push(`放在${sceneName}時特別合適`);
+      const sceneMatch = {
+        zh_tw: `放在${sceneName}時特別合適`,
+        en:    `especially fitting for ${sceneName}`,
+        ja:    `${sceneName}に置くのにとてもよく合っています`,
+      };
+      parts.push(sceneMatch[loc] || sceneMatch.zh_tw);
     }
 
-    return parts.filter(Boolean).join('。').replace(/。。/g, '。').replace(/）。/g, '）') + '。';
+    const sep = loc === 'en' ? '. ' : '。';
+    const end = loc === 'en' ? '.' : '。';
+    return parts.filter(Boolean).join(sep) + end;
   }
 
   // ── 8. pickWithDiversity ───────────────────────────────────────────────────
@@ -296,7 +337,7 @@
   }
 
   // ── 9. buildSlotResult ────────────────────────────────────────────────────
-  function buildSlotResult(entry, context, locale) {
+  function buildSlotResult(entry, context, locale, slotId) {
     const { pokemon, totalScore, scoreDetail } = entry;
     return {
       dexNo: pokemon.dexNo, id: pokemon.id, name: pokemon.name,
@@ -304,7 +345,7 @@
       officialLink: pokemon.official30th ? pokemon.official30th.link : '',
       types: pokemon.types || null,
       totalScore, scoreDetail,
-      reason: buildRecommendationReason(pokemon, scoreDetail, context, locale),
+      reason: buildRecommendationReason(pokemon, scoreDetail, context, locale, slotId),
       slotSelectionReason: scoreDetail.slotSelectionReason || '',
     };
   }
@@ -357,9 +398,11 @@
         const fpEntry = scored.find(s => s.pokemon.dexNo === found.dexNo);
         const fpRank  = fpEntry ? scored.indexOf(fpEntry) + 1 : null;
         const synced  = fpRank !== null && fpRank <= 10;
-        const reason  = fpEntry
-          ? buildRecommendationReason(found, fpEntry.scoreDetail, context, locale)
-          : '這是你長期喜歡與認同的夥伴，今日配置由其他寶可夢協助不同場景。';
+        const reason  = buildRecommendationReason(
+          found,
+          fpEntry ? fpEntry.scoreDetail : {},
+          context, locale, 'favoritePartner'
+        );
         favoritePartner = {
           dexNo: found.dexNo, id: found.id, name: found.name,
           fiveElement: found.fiveElement, popularityScore: found.popularityScore,
@@ -384,7 +427,7 @@
       const mgElem = mgEntry.pokemon.fiveElement && mgEntry.pokemon.fiveElement.main;
       elemCount.set(mgElem, (elemCount.get(mgElem) || 0) + 1);
       mgEntry.scoreDetail.slotSelectionReason = '全量排序第一名，綜合分最高。';
-      mainGuardian = buildSlotResult(mgEntry, context, locale);
+      mainGuardian = buildSlotResult(mgEntry, context, locale, 'mainGuardian');
     }
     const mgDexNo = mainGuardian ? mainGuardian.dexNo : null;
 
@@ -424,7 +467,7 @@
       const ssElem = ssEntry.pokemon.fiveElement && ssEntry.pokemon.fiveElement.main;
       elemCount.set(ssElem, (elemCount.get(ssElem) || 0) + 1);
       ssEntry.scoreDetail.slotSelectionReason = ssDiversityNote;
-      sceneSupport = buildSlotResult(ssEntry, context, locale);
+      sceneSupport = buildSlotResult(ssEntry, context, locale, 'sceneSupport');
     }
 
     // balanceSupport
@@ -449,7 +492,7 @@
       const bsElem = bsEntry.pokemon.fiveElement && bsEntry.pokemon.fiveElement.main;
       elemCount.set(bsElem, (elemCount.get(bsElem) || 0) + 1);
       bsEntry.scoreDetail.slotSelectionReason = bsDiversityNote;
-      balanceSupport = buildSlotResult(bsEntry, context, locale);
+      balanceSupport = buildSlotResult(bsEntry, context, locale, 'balanceSupport');
     }
 
     const topCandidates = scored.slice(0, 10).map((s, i) => ({
