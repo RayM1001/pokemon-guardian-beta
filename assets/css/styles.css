@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════════════
-   我的寶可夢日常搭檔 — styles.css  (Phase 15A)
+   我的寶可夢日常搭檔 — styles.css  (Phase 15C)
    溫柔療癒 × 收藏卡風格 × 生活感 × 屬性配色
    ══════════════════════════════════════════════════════════════════ */
 
@@ -49,6 +49,16 @@
 
   /* ── Typography ── */
   --font-base: 'Segoe UI', 'Helvetica Neue', Arial, 'Hiragino Sans', 'Yu Gothic', sans-serif;
+
+  /* ── Type scale (fluid) ── */
+  --fs-kicker:        clamp(0.78rem, 0.72rem + 0.28vw, 0.95rem);
+  --fs-hero-title:    clamp(1.72rem, 4.2vw, 2.65rem);
+  --fs-hero-tagline:  clamp(1.14rem, 1.8vw, 1.52rem);
+  --fs-hero-desc:     clamp(0.95rem, 1.3vw, 1.14rem);
+  --fs-button-lg:     clamp(1.0rem,  1.4vw, 1.18rem);
+  --fs-section-title: clamp(1.1rem,  2vw,   1.35rem);
+  --fs-body:          clamp(0.95rem, 0.9rem + 0.22vw, 1.05rem);
+  --fs-small:         clamp(0.78rem, 0.72rem + 0.2vw,  0.9rem);
 }
 
 /* ── Global ───────────────────────────────────────────────────────── */
@@ -347,12 +357,12 @@ body::before {
 
 /* Small eyebrow line above title */
 .home-hero-eyebrow {
-  font-size: 0.72rem;
-  font-weight: 800;
+  font-size: var(--fs-kicker);
+  font-weight: 700;
   color: var(--c-accent);
-  letter-spacing: 0.14em;
+  letter-spacing: 0.10em;
   text-transform: uppercase;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -361,20 +371,20 @@ body::before {
 .home-hero-eyebrow::before,
 .home-hero-eyebrow::after {
   content: '';
-  width: 26px;
+  width: 20px;
   height: 1.5px;
   background: var(--c-accent);
-  opacity: 0.45;
+  opacity: 0.40;
   border-radius: 2px;
 }
 
 .home-title {
-  font-size: clamp(1.55rem, 6vw, 2.1rem);
-  font-weight: 900;
-  line-height: 1.2;
+  font-size: var(--fs-hero-title);
+  font-weight: 800;
+  line-height: 1.15;
   margin-bottom: 10px;
   color: var(--c-text);
-  letter-spacing: -0.5px;
+  letter-spacing: -0.3px;
 }
 /* Legacy .home-title-sub — replaced by .home-tagline but kept for compat */
 .home-title-sub {
@@ -386,30 +396,31 @@ body::before {
 }
 /* Situational tagline below main title */
 .home-tagline {
-  font-size: clamp(1.0rem, 3.2vw, 1.12rem);
-  font-weight: 700;
+  font-size: var(--fs-hero-tagline);
+  font-weight: 600;
   color: var(--c-accent);
-  margin-bottom: 12px;
-  line-height: 1.45;
-  letter-spacing: -0.05px;
+  margin-bottom: 14px;
+  line-height: 1.4;
+  letter-spacing: -0.1px;
 }
 .home-subtitle {
-  font-size: clamp(0.87rem, 2.5vw, 0.94rem);
+  font-size: var(--fs-hero-desc);
   color: var(--c-text-muted);
-  line-height: 1.78;
-  margin-bottom: 30px;
-  max-width: 380px;
+  line-height: 1.75;
+  margin-bottom: 28px;
+  max-width: min(580px, 100%);
   margin-left: auto;
   margin-right: auto;
+  text-wrap: balance;
 }
 .home-start-btn-wrap {
-  max-width: 320px;
+  max-width: 360px;
   margin: 0 auto;
 }
 /* Hero CTA — more prominent start button */
 .btn-hero-cta {
-  font-size: 1.06rem !important;
-  padding: 18px !important;
+  font-size: var(--fs-button-lg) !important;
+  padding: 16px !important;
   letter-spacing: 0.01em;
   box-shadow: 0 6px 22px rgba(107, 140, 174, 0.44), 0 2px 6px rgba(107, 140, 174, 0.22) !important;
 }
@@ -1236,8 +1247,9 @@ body::before {
 /* ── 360px mobile tweaks ─────────────────────────────────────────── */
 @media (max-width: 390px) {
   .pg-main              { padding: 16px 13px 44px; }
-  .home-title           { font-size: 1.48rem; letter-spacing: -0.3px; }
-  .home-tagline         { font-size: 0.94rem; }
+  .home-title           { font-size: clamp(1.52rem, 5.5vw, 1.72rem); letter-spacing: -0.2px; }
+  .home-tagline         { font-size: 1.05rem; }
+  .home-subtitle        { font-size: 0.9rem; max-width: 100%; }
   .home-hero-card       { padding: 22px 16px 20px; }
   .scene-grid           { gap: 8px; }
   .scene-card           { padding: 15px 8px 12px; gap: 8px; }
@@ -1256,7 +1268,7 @@ body::before {
   .card                 { padding: 20px 16px; }
   .btn                  { padding: 13px 20px; }
   .btn-primary          { padding: 15px !important; }
-  .btn-hero-cta         { padding: 16px !important; }
+  .btn-hero-cta         { font-size: 0.98rem !important; padding: 15px !important; }
 }
 
 /* ── Responsive ───────────────────────────────────────────────────── */
@@ -1271,8 +1283,6 @@ body::before {
 
 @media (min-width: 768px) {
   .pg-main          { max-width: 660px; padding: 34px 30px 68px; }
-  .home-title       { font-size: clamp(2rem, 4.5vw, 2.5rem); }
-  .home-subtitle    { font-size: 1rem; }
   .card-title       { font-size: clamp(1.12rem, 2.5vw, 1.3rem); }
   .quiz-question    { font-size: clamp(1.1rem, 2.2vw, 1.26rem); }
   .result-poke-name { font-size: 1.14rem; }
@@ -1281,8 +1291,6 @@ body::before {
 
 @media (min-width: 1024px) {
   .pg-main    { max-width: 900px; padding: 38px 36px 76px; }
-  .home-title { font-size: clamp(2.1rem, 3.2vw, 2.8rem); }
-  .home-subtitle { font-size: 1.05rem; max-width: 520px; }
   .home-hero  { padding: 60px 0 42px; }
 
   .card-title    { font-size: clamp(1.15rem, 2vw, 1.42rem); }
