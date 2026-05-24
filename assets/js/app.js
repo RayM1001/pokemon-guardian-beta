@@ -32,10 +32,44 @@
     result:          null,
   };
 
-  // 場景圖示對應
-  const SCENE_ICONS = {
-    entrance: '🚪', bedroom: '🛏️', desk: '📚',
-    office: '💼', watch: '⌚', bag: '👜',
+  // 場景圖示 — inline SVG（不使用 emoji，不依賴外部圖片）
+  const SCENE_SVGS = {
+    entrance: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M36 44H12V16Q24 5 36 16Z" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linejoin="round"/>
+      <circle cx="14.5" cy="30" r="2.5" fill="currentColor"/>
+      <line x1="5" y1="44" x2="43" y2="44" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+    </svg>`,
+    bedroom: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M34 10 Q43 23 38 33 Q28 24 19 28 Q24 15 34 10Z" fill="currentColor" opacity="0.82"/>
+      <circle cx="27" cy="16" r="2.4" fill="currentColor" opacity="0.35"/>
+      <circle cx="17" cy="23" r="1.7" fill="currentColor" opacity="0.25"/>
+      <circle cx="39" cy="13" r="1.5" fill="currentColor" opacity="0.28"/>
+    </svg>`,
+    desk: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="5" y="35" width="38" height="4.5" rx="2.2" fill="currentColor"/>
+      <path d="M34 9 L39 26 M34 9 L29.5 13.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="7"  y1="22" x2="27" y2="22" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" opacity="0.65"/>
+      <line x1="7"  y1="29" x2="21" y2="29" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" opacity="0.42"/>
+    </svg>`,
+    office: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="6"  y="9"  width="15" height="21" rx="2.5" stroke="currentColor" stroke-width="2.5" fill="none"/>
+      <rect x="25" y="9"  width="17" height="11" rx="2.5" stroke="currentColor" stroke-width="2.5" fill="none"/>
+      <line x1="6"  y1="36" x2="42" y2="36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="6"  y1="42" x2="32" y2="42" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.42"/>
+    </svg>`,
+    watch: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="17" y="3"  width="14" height="7"  rx="3.5" fill="currentColor" opacity="0.44"/>
+      <rect x="17" y="38" width="14" height="7"  rx="3.5" fill="currentColor" opacity="0.44"/>
+      <circle cx="24" cy="24" r="14" stroke="currentColor" stroke-width="2.6" fill="none"/>
+      <line x1="24" y1="24" x2="24" y2="13" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+      <line x1="24" y1="24" x2="32" y2="24" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+      <circle cx="24" cy="24" r="2" fill="currentColor"/>
+    </svg>`,
+    bag: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M17 20 Q17 10 24 10 Q31 10 31 20" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+      <rect x="7" y="20" width="34" height="23" rx="7" stroke="currentColor" stroke-width="2.6" fill="none"/>
+      <line x1="7" y1="31" x2="41" y2="31" stroke="currentColor" stroke-width="1.5" opacity="0.32"/>
+    </svg>`,
   };
 
   // ── Beta 回饋設定 ─────────────────────────────────────────────────────────
@@ -236,7 +270,7 @@
     const header = document.createElement('header');
     header.className = 'pg-header';
     header.innerHTML = `
-      <div class="pg-logo">守護<span>位</span></div>
+      <div class="pg-logo"><span class="pg-logo-dot"></span>日常<span>搭檔</span></div>
       <div class="lang-switcher">
         <button class="lang-btn ${loc==='zh_tw'?'active':''}" data-locale="zh_tw">${I18N.t('lang_zh_tw')}</button>
         <button class="lang-btn ${loc==='en'?'active':''}"    data-locale="en">${I18N.t('lang_en')}</button>
@@ -268,23 +302,68 @@
   function renderHome(container) {
     if (!container) { renderApp(); return; }
     state.screen = 'home';
+
+    // 漂浮屬性標籤（裝飾用，aria-hidden）
+    const loc = I18N.getLocale();
+    const decoChipLabels = {
+      zh_tw: ['水', '草', '妖精', '幽靈', '電', '冰'],
+      en:    ['Water', 'Grass', 'Fairy', 'Ghost', 'Electric', 'Ice'],
+      ja:    ['みず', 'くさ', 'フェアリー', 'ゴースト', 'でんき', 'こおり'],
+    };
+    const chipLabels  = decoChipLabels[loc] || decoChipLabels.zh_tw;
+    const chipClasses = ['water', 'grass', 'fairy', 'ghost', 'electric', 'ice'];
+    const decoHTML = chipLabels.map((lbl, i) =>
+      `<span class="deco-chip deco-chip--${chipClasses[i]}" aria-hidden="true">${lbl}</span>`
+    ).join('');
+
     container.innerHTML = `
-      <div class="home-hero">
-        <span class="home-icon">🌟</span>
-        <h1 class="home-title">${I18N.t('homeTitle')}</h1>
-        <p class="home-subtitle">${I18N.t('homeSubtitle')}</p>
-        <div class="home-features">
-          <div class="home-feature"><span class="home-feature-icon">🌿</span><span>${I18N.t('homeFeature1')}</span></div>
-          <div class="home-feature"><span class="home-feature-icon">💬</span><span>${I18N.t('homeFeature2')}</span></div>
-          <div class="home-feature"><span class="home-feature-icon">📍</span><span>${I18N.t('homeFeature3')}</span></div>
+      <div class="home-wrap">
+        <div class="home-deco" aria-hidden="true">${decoHTML}</div>
+        <div class="home-hero fade-in">
+          <div class="home-hero-eyebrow">Fan Quiz</div>
+          <div class="home-hero-card">
+            <h1 class="home-title">${I18N.t('homeTitle')}</h1>
+            <p class="home-tagline">${I18N.t('homeTagline')}</p>
+            <p class="home-subtitle">${I18N.t('homeSubtitle')}</p>
+            <div class="home-start-btn-wrap">
+              <button class="btn btn-primary btn-hero-cta" id="startBtn">${I18N.t('startBtn')}</button>
+            </div>
+          </div>
         </div>
-        <button class="btn btn-primary" id="startBtn">${I18N.t('startBtn')}</button>
-      </div>
-      <div class="beta-notice">
-        <span class="beta-badge">BETA</span>
-        <span>${I18N.t('betaNotice')}</span>
-      </div>
-      ${buildDisclaimerHTML()}`;
+        <div class="home-features fade-in-d1">
+          <div class="home-feature">
+            <div class="home-feature-icon-wrap home-feature-icon-wrap--green" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+                <circle cx="12" cy="12" r="3.5" fill="currentColor"/>
+                <path d="M12 2v2M12 20v2M2 12h2M20 12h2M5.64 5.64l1.42 1.42M16.95 16.95l1.41 1.41M5.64 18.36l1.42-1.41M16.95 7.05l1.41-1.41" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span class="home-feature-text">${I18N.t('homeFeature1')}</span>
+          </div>
+          <div class="home-feature">
+            <div class="home-feature-icon-wrap home-feature-icon-wrap--blue" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                <path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" opacity="0.85"/>
+              </svg>
+            </div>
+            <span class="home-feature-text">${I18N.t('homeFeature2')}</span>
+          </div>
+          <div class="home-feature">
+            <div class="home-feature-icon-wrap home-feature-icon-wrap--pink" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17.1l-6.2 4.2 2.4-7.4L2 9.4h7.6z" opacity="0.85"/>
+              </svg>
+            </div>
+            <span class="home-feature-text">${I18N.t('homeFeature3')}</span>
+          </div>
+        </div>
+        <div class="beta-notice fade-in-d2">
+          <span class="beta-badge">BETA</span>
+          <span>${I18N.t('betaNotice')}</span>
+        </div>
+        ${buildDisclaimerHTML()}
+      </div>`;
+
     container.querySelector('#startBtn').addEventListener('click', () => {
       state.screen = 'quiz';
       state.step   = 1;
@@ -303,7 +382,12 @@
       <div class="search-input-wrap">
         <input id="searchInput" class="search-input" type="search"
                placeholder="${I18N.t('s1SearchPlaceholder')}" autocomplete="off">
-        <span class="search-icon">🔍</span>
+        <span class="search-icon" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none" width="18" height="18">
+            <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.8"/>
+            <line x1="13" y1="13" x2="18" y2="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </span>
       </div>
       <div id="searchResults"></div>
       <div id="favCard"></div>`;
@@ -640,9 +724,9 @@
           const sc   = sceneRules[id] || {};
           const name = I18N.sceneLocName(sc) || id;
           const tone = I18N.sceneLocTone(sc) || '';
-          const icon = SCENE_ICONS[id] || '📦';
+          const svg = SCENE_SVGS[id] || '';
           return `<button class="scene-card ${state.sceneId === id ? 'selected' : ''}" data-sceneid="${id}">
-            <span class="scene-icon">${icon}</span>
+            <span class="scene-icon-wrap">${svg}</span>
             <span class="scene-name">${name}</span>
             <span class="scene-tone">${tone}</span>
           </button>`;
@@ -744,25 +828,37 @@
     container.appendChild(energyDiv);
 
     // 結果卡片（單欄，由上到下）
+    // slot icons: CSS-rendered colored dots (no emoji, no external images)
+    const slotIconColors = {
+      favoritePartner: '#D685AD',  // fairy-pink
+      mainGuardian:    '#6390F0',  // water-blue
+      sceneSupport:    '#7AC74C',  // grass-green
+      balanceSupport:  '#96D9D6',  // ice-teal
+    };
+    function slotDot(key) {
+      const c = slotIconColors[key] || '#A8A77A';
+      return `<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${c};flex-shrink:0;"></span>`;
+    }
     const slotDefs = [
-      { key: 'favoritePartner', labelKey: 'slotFavorite', icon: '💛' },
-      { key: 'mainGuardian',    labelKey: 'slotMain',    icon: '🌟' },
-      { key: 'sceneSupport',    labelKey: 'slotScene',   icon: '📍' },
-      { key: 'balanceSupport',  labelKey: 'slotBalance', icon: '⚖️' },
+      { key: 'favoritePartner', labelKey: 'slotFavorite' },
+      { key: 'mainGuardian',    labelKey: 'slotMain'     },
+      { key: 'sceneSupport',    labelKey: 'slotScene'    },
+      { key: 'balanceSupport',  labelKey: 'slotBalance'  },
     ];
 
     const cardsGrid = document.createElement('div');
     cardsGrid.className = 'results-grid';
 
-    slotDefs.forEach(({ key, labelKey, icon }) => {
+    const delayClasses = ['fade-in', 'fade-in-d1', 'fade-in-d2', 'fade-in-d3'];
+    slotDefs.forEach(({ key, labelKey }, idx) => {
       const slotData = slots[key];
       if (!slotData) return;
 
       const pair = document.createElement('div');
-      pair.className = 'result-pair';
+      pair.className = `result-pair ${delayClasses[idx] || ''}`;
 
       const sec = document.createElement('div');
-      sec.innerHTML = `<div class="result-section-title">${icon} ${I18N.t(labelKey)}</div>`;
+      sec.innerHTML = `<div class="result-section-title">${slotDot(key)} ${I18N.t(labelKey)}</div>`;
       pair.appendChild(sec);
       pair.appendChild(buildResultCard(slotData, key, loc));
       cardsGrid.appendChild(pair);
@@ -912,7 +1008,7 @@
 
     card.innerHTML = `
       ${headerHTML}
-      <div class="result-card-body" style="background:rgba(255,255,255,0.85);">
+      <div class="result-card-body">
         ${syncedNoteHTML}
         <div class="result-label">${I18N.t('labelReason')}</div>
         <div class="result-reason">${reason}</div>
@@ -930,9 +1026,9 @@
       : '—';
 
     const slotLabels = {
-      zh_tw: { fav: '本命夥伴', main: '今日主守護', scene: '場景補位', balance: '平衡補位' },
-      en:    { fav: 'Fav Partner', main: 'Main Guardian', scene: 'Scene Support', balance: 'Balance Support' },
-      ja:    { fav: '推し相棒', main: 'メイン守護', scene: 'シーン補助', balance: 'バランス補助' },
+      zh_tw: { fav: '本命夥伴', main: '今日主搭檔', scene: '場景搭檔', balance: '平衡搭檔' },
+      en:    { fav: 'Fav Partner', main: "Today's Main Partner", scene: 'Space Partner', balance: 'Balance Partner' },
+      ja:    { fav: '大切な相棒', main: '今日のメインパートナー', scene: '空間のパートナー', balance: 'バランスパートナー' },
     };
     const L   = slotLabels[loc] || slotLabels.zh_tw;
     const sep = loc === 'en' ? ': ' : '：';
@@ -1017,7 +1113,7 @@
 
     ctx.fillStyle = '#6b8cae';
     ctx.font = '32px sans-serif';
-    ctx.fillText('Pokémon Aura Match', W / 2, 126);
+    ctx.fillText(I18N.t('shareCardSubtitle'), W / 2, 126);
 
     // Divider
     ctx.strokeStyle = '#d8d2c9';
@@ -1026,25 +1122,9 @@
     ctx.moveTo(80, 172); ctx.lineTo(W - 80, 172);
     ctx.stroke();
 
-    // ── Slot cards ──
-    const slotDefs = [
-      { key: 'favoritePartner', labelKey: 'slotFavorite' },
-      { key: 'mainGuardian',    labelKey: 'slotMain'     },
-      { key: 'sceneSupport',    labelKey: 'slotScene'    },
-      { key: 'balanceSupport',  labelKey: 'slotBalance'  },
-    ];
-
-    // Precise layout: 4 cards, fixed heights
-    const CARD_X = 58, CARD_W = W - 116;
-    const CARD_H = 192, CARD_GAP = 16;
-    // 4 cards: 4*192 + 3*16 = 768+48 = 816
-    // Cards span: 190 → 1006 (816px)
-    const CARDS_START = 192;
-
-    slotDefs.forEach(({ key, labelKey }, idx) => {
-      const cardY = CARDS_START + idx * (CARD_H + CARD_GAP);
-      const sd    = slots[key];
-      const name  = sd && sd.name
+    // ── drawCard helper（2-column layout shared renderer）──
+    function drawCard(x, y, w, h, circR, sd, labelKey, nameSz, labelSz, dexSz, chipSz) {
+      const name    = sd && sd.name
         ? (sd.name[loc] || sd.name.zh_tw || sd.name.en || '—')
         : '—';
       const dexNo   = sd && sd.dexNo ? '#' + String(sd.dexNo).padStart(4, '0') : '';
@@ -1059,66 +1139,69 @@
       const sdL1 = lightenColor(sdC1, 0.80);
       const sdL2 = sdC2 ? lightenColor(sdC2, 0.80) : null;
 
-      // Shadow
+      // Shadow + white base
       ctx.save();
       ctx.shadowColor   = 'rgba(90,80,60,0.10)';
-      ctx.shadowBlur    = 16;
-      ctx.shadowOffsetY = 4;
-      fillRR(CARD_X, cardY, CARD_W, CARD_H, 18, '#ffffff');
+      ctx.shadowBlur    = 18;
+      ctx.shadowOffsetY = 5;
+      fillRR(x, y, w, h, 20, '#ffffff');
       ctx.restore();
 
-      // Card bg: 雙屬性上下分色，單屬性淡化色
+      // Card background gradient
       if (sdC2) {
-        const bgGr = ctx.createLinearGradient(0, cardY, 0, cardY + CARD_H);
+        const bgGr = ctx.createLinearGradient(0, y, 0, y + h);
         bgGr.addColorStop(0,    sdL1);
         bgGr.addColorStop(0.48, sdL1);
         bgGr.addColorStop(0.52, sdL2);
         bgGr.addColorStop(1,    sdL2);
-        fillRR(CARD_X, cardY, CARD_W, CARD_H, 18, '#ffffff'); // white first (rounded corners)
         ctx.save();
         ctx.beginPath();
-        ctx.moveTo(CARD_X + 18, cardY);
-        ctx.arcTo(CARD_X + CARD_W, cardY,     CARD_X + CARD_W, cardY + CARD_H, 18);
-        ctx.arcTo(CARD_X + CARD_W, cardY + CARD_H, CARD_X, cardY + CARD_H, 18);
-        ctx.arcTo(CARD_X,     cardY + CARD_H, CARD_X, cardY,     18);
-        ctx.arcTo(CARD_X,     cardY,     CARD_X + CARD_W, cardY,     18);
+        ctx.moveTo(x + 20, y);
+        ctx.arcTo(x + w, y,     x + w, y + h, 20);
+        ctx.arcTo(x + w, y + h, x,     y + h, 20);
+        ctx.arcTo(x,     y + h, x,     y,     20);
+        ctx.arcTo(x,     y,     x + w, y,     20);
         ctx.closePath();
         ctx.fillStyle = bgGr;
         ctx.fill();
         ctx.restore();
       } else {
-        fillRR(CARD_X, cardY, CARD_W, CARD_H, 18, sdL1);
+        fillRR(x, y, w, h, 20, sdL1);
       }
 
-      // Content overlay (白色半透明，確保可讀性)
+      // White content overlay
       ctx.save();
       ctx.beginPath();
-      ctx.moveTo(CARD_X + 18 + 8, cardY);
-      ctx.lineTo(CARD_X + CARD_W - 18, cardY);
-      ctx.arcTo(CARD_X + CARD_W, cardY,     CARD_X + CARD_W, cardY + CARD_H, 18);
-      ctx.arcTo(CARD_X + CARD_W, cardY + CARD_H, CARD_X + 8, cardY + CARD_H, 18);
-      ctx.lineTo(CARD_X + 8, cardY + CARD_H);
-      ctx.lineTo(CARD_X + 8, cardY);
+      ctx.moveTo(x + 28, y);
+      ctx.lineTo(x + w - 20, y);
+      ctx.arcTo(x + w, y,     x + w, y + h, 20);
+      ctx.arcTo(x + w, y + h, x + 8, y + h, 20);
+      ctx.lineTo(x + 8, y + h);
+      ctx.lineTo(x + 8, y);
       ctx.closePath();
       ctx.fillStyle = 'rgba(255,255,255,0.62)';
       ctx.fill();
       ctx.restore();
 
-      // Left accent bar（雙屬性=漸層，單屬性=實色）
+      // Left accent bar
       if (sdC2) {
-        const barGr = ctx.createLinearGradient(0, cardY + 18, 0, cardY + CARD_H - 18);
+        const barGr = ctx.createLinearGradient(0, y + 20, 0, y + h - 20);
         barGr.addColorStop(0, sdC1);
         barGr.addColorStop(1, sdC2);
         ctx.fillStyle = barGr;
       } else {
         ctx.fillStyle = sdC1;
       }
-      ctx.fillRect(CARD_X, cardY + 18, 8, CARD_H - 36);
+      ctx.fillRect(x, y + 20, 8, h - 40);
 
-      // Circle placeholder（雙屬性=放射漸層，單屬性=實色）
-      const cx = CARD_X + 106, cy = cardY + CARD_H / 2;
+      // Circle placeholder
+      const circX = x + 8 + 16 + circR;
+      const circY = y + h / 2;
       if (sdC2) {
-        const circGr = ctx.createRadialGradient(cx - 12, cy - 12, 0, cx, cy, 48);
+        const circGr = ctx.createRadialGradient(
+          circX - circR * 0.3, circY - circR * 0.3, 0,
+          circX, circY, circR
+        );
         circGr.addColorStop(0, sdC1);
         circGr.addColorStop(1, sdC2);
         ctx.fillStyle = circGr;
@@ -1126,67 +1209,98 @@
         ctx.fillStyle = sdC1;
       }
       ctx.beginPath();
-      ctx.arc(cx, cy, 48, 0, Math.PI * 2);
+      ctx.arc(circX, circY, circR, 0, Math.PI * 2);
       ctx.fill();
 
-      // First char in circle（依亮度選文字色）
+      // First character in circle
       ctx.fillStyle    = typeTextColor(sdC1);
-      ctx.font         = 'bold 44px sans-serif';
+      ctx.font         = `bold ${Math.round(circR * 0.85)}px sans-serif`;
       ctx.textAlign    = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(firstCh, cx, cy);
+      ctx.fillText(firstCh, circX, circY);
       ctx.textBaseline = 'top';
+
+      // Text column
+      const textX  = circX + circR + 16;
+      const textW  = (x + w) - textX - 12;
+      const labelY = y + Math.max(18, Math.round(h * 0.08));
 
       // Slot label
       ctx.fillStyle = '#8a7f72';
-      ctx.font      = '30px sans-serif';
+      ctx.font      = `${labelSz}px sans-serif`;
       ctx.textAlign = 'left';
-      ctx.fillText(I18N.t(labelKey), CARD_X + 174, cardY + 30);
+      ctx.fillText(I18N.t(labelKey), textX, labelY);
 
-      // Pokémon name
+      // Pokémon name (wrap if needed)
       ctx.fillStyle = '#3a3328';
-      ctx.font      = 'bold 52px sans-serif';
-      ctx.fillText(name, CARD_X + 174, cardY + 72);
+      ctx.font      = `bold ${nameSz}px sans-serif`;
+      const nameLines = wrapText(name, textW);
+      const nameLH    = nameSz + 4;
+      const nameY0    = labelY + labelSz + 8;
+      nameLines.slice(0, 2).forEach((line, li) => {
+        ctx.fillText(line, textX, nameY0 + li * nameLH);
+      });
 
-      // Dex number + type chip（右上，以屬性色顯示）
+      // Dex number + type chips
+      const dexY = nameY0 + Math.min(nameLines.length, 2) * nameLH + 8;
       ctx.fillStyle = '#8a7f72';
-      ctx.font      = '28px sans-serif';
-      ctx.fillText(dexNo, CARD_X + 174, cardY + 138);
+      ctx.font      = `${dexSz}px sans-serif`;
+      ctx.fillText(dexNo, textX, dexY);
 
-      // Type colour chips（小矩形 + 文字）
-      let chipX = CARD_X + 174 + ctx.measureText(dexNo).width + 18;
-      sdTypes.slice(0, 2).forEach(t => {
-        const tc  = typeColor(t);
-        const txt = typeTextColor(tc);
-        const lbl = sdTypes[0] === t && sd.types && sd.types['zh_tw']
-          ? (sd.types[loc] || sd.types['zh_tw'] || [])[sdTypes.indexOf(t)] || t
-          : t;
-        ctx.font = 'bold 22px sans-serif';
-        const chipW = ctx.measureText(lbl).width + 20;
-        const chipY = cardY + 135;
-        // chip bg
+      const localTypes = sd && sd.types ? (sd.types[loc] || sd.types['zh_tw'] || []) : [];
+      let chipX = textX + ctx.measureText(dexNo).width + 10;
+      sdTypes.slice(0, 2).forEach((t, ti) => {
+        const tc    = typeColor(t);
+        const txt   = typeTextColor(tc);
+        const lbl   = localTypes[ti] || t;
+        ctx.font    = `bold ${chipSz}px sans-serif`;
+        const chipW = ctx.measureText(lbl).width + 16;
+        const chipH = chipSz + 8;
         ctx.save();
         ctx.beginPath();
-        ctx.roundRect ? ctx.roundRect(chipX, chipY, chipW, 30, 6) : ctx.rect(chipX, chipY, chipW, 30);
+        if (ctx.roundRect) {
+          ctx.roundRect(chipX, dexY, chipW, chipH, 5);
+        } else {
+          ctx.rect(chipX, dexY, chipW, chipH);
+        }
         ctx.fillStyle = tc;
         ctx.fill();
         ctx.restore();
-        // chip text
-        ctx.fillStyle = txt;
+        ctx.fillStyle    = txt;
         ctx.textBaseline = 'middle';
-        ctx.fillText(lbl, chipX + 10, chipY + 15);
+        ctx.fillText(lbl, chipX + 8, dexY + chipH / 2);
         ctx.textBaseline = 'top';
-        chipX += chipW + 8;
+        chipX += chipW + 6;
       });
-    });
+    }
 
-    // Cards bottom: CARDS_START + 4*(CARD_H+CARD_GAP) - CARD_GAP = 192 + 816 - 16 = 992
-    // But we used idx*(192+16) so last card starts at 3*208=624+192=816 → ends at 1008
-    // Energy section Y = 1008 + 50 = 1058 (leaving 50px gap)
-    const CARDS_BOTTOM = CARDS_START + 4 * CARD_H + 3 * CARD_GAP; // = 192+768+48 = 1008
-    const ENERGY_Y     = CARDS_BOTTOM + 48;
+    // ── 2-column hierarchical layout ──
+    // Large cards (top): 本命夥伴 + 今日主搭檔
+    // Small cards (bottom): 場景搭檔 + 平衡搭檔
+    const MARGIN  = 40;
+    const COL_GAP = 20;
+    const COL_W   = (W - MARGIN * 2 - COL_GAP) / 2;   // = 490
+    const LEFT_X  = MARGIN;
+    const RIGHT_X = MARGIN + COL_W + COL_GAP;           // = 550
+
+    const LARGE_H = 510;
+    const SMALL_H = 265;
+    const ROW_GAP = 20;
+    const ROW1_Y  = 192;
+    const ROW2_Y  = ROW1_Y + LARGE_H + ROW_GAP;         // = 722
+
+    // Large cards — circR 68, name 44px, label 28px, dex 24px, chip 18px
+    drawCard(LEFT_X,  ROW1_Y, COL_W, LARGE_H, 68, slots.favoritePartner, 'slotFavorite', 44, 28, 24, 18);
+    drawCard(RIGHT_X, ROW1_Y, COL_W, LARGE_H, 68, slots.mainGuardian,    'slotMain',     44, 28, 24, 18);
+
+    // Small cards — circR 42, name 32px, label 22px, dex 20px, chip 15px
+    drawCard(LEFT_X,  ROW2_Y, COL_W, SMALL_H, 42, slots.sceneSupport,   'slotScene',   32, 22, 20, 15);
+    drawCard(RIGHT_X, ROW2_Y, COL_W, SMALL_H, 42, slots.balanceSupport, 'slotBalance', 32, 22, 20, 15);
 
     // ── Energy section ──
+    const CARDS_BOTTOM = ROW2_Y + SMALL_H;   // = 987
+    const ENERGY_Y     = CARDS_BOTTOM + 28;
+
     const elemSet = [...new Set([
       dist && dist.mainGuardian,
       dist && dist.sceneSupport,
@@ -1197,7 +1311,7 @@
     const energyFull   = energyPrefix + energyLabels;
 
     ctx.fillStyle    = '#6b8cae';
-    ctx.font         = '38px sans-serif';
+    ctx.font         = '36px sans-serif';
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'top';
     ctx.fillText(energyFull, W / 2, ENERGY_Y);
